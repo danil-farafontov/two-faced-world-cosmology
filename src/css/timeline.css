@@ -17,7 +17,50 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+}
+
+.slider-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 100px;
+  min-height: 44px;
+  gap: 4px;
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.slider-row input[type="range"] {
+  flex: 1;
+  accent-color: #cd7f32;
+}
+
+.slider-row span {
+  font-size: 14px;
+  min-width: 30px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.time-scale-info-inline {
+  font-size: 12px;
+  color: #b8860b;
+  text-align: center;
+  white-space: nowrap;
+  min-height: 16px;
+  line-height: 16px;
+}
+
+.time-scale-info-inline.placeholder {
+  visibility: hidden;
 }
 
 .rune-btn {
@@ -45,16 +88,6 @@
   font-size: 14px;
   min-width: 30px;
   text-align: center;
-}
-
-.time-scale-info {
-  width: 100%;
-  text-align: center;
-  font-size: 13px;
-  color: #b8860b;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(205, 127, 50, 0.3);
 }
 
 @media (max-width: 767px) {

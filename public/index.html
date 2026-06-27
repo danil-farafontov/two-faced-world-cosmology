@@ -12,14 +12,21 @@
   <div id="timeline-panel">
     <div class="timeline-controls">
       <button id="play-pause-btn" class="rune-btn" title="Pause/Play">▶</button>
-      <input type="range" id="time-slider" min="0" max="1000" value="0" step="1">
-      <span id="time-display">0</span>
-      <input type="range" id="speed-slider" min="1" max="336" value="1" step="1">
-      <span id="speed-display">x1</span>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input type="range" id="time-slider" min="0" max="1000" value="0" step="1">
+          <span id="time-display">0</span>
+        </div>
+        <div class="time-scale-info-inline placeholder"></div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-row">
+          <input type="range" id="speed-slider" min="1" max="336" value="1" step="1">
+          <span id="speed-display">x1</span>
+        </div>
+        <div class="time-scale-info-inline">1 сек = <span id="time-scale-value">1</span> <span id="time-scale-unit">час</span></div>
+      </div>
       <button id="toggle-orbits-btn" class="rune-btn" title="Toggle Orbits">⊕</button>
-    </div>
-    <div class="time-scale-info">
-      1 сек = <span id="time-scale-value">1</span> <span id="time-scale-unit">час</span>
     </div>
   </div>
 
