@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # Development server with webpack-dev-server
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tfwcosmo-dev
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "443:443"
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+    networks:
+      - tfwcosmo-net
+
+  # Production nginx server
+  nginx:
+    image: nginx:alpine
+    container_name: tfwcosmo-prod
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./dist:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+    restart: unless-stopped
+    networks:
+      - tfwcosmo-net
+
+networks:
+  tfwcosmo-net:
+    driver: bridge
