@@ -2,12 +2,13 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {
   COLORS,
-  ORBITAL_PERIODS,
+  SUNS_ORBITAL_PERIOD,
   PLANETS_DATA,
   SUN_DATA,
   CAMERA_CONFIG,
   CONTROLS_CONFIG,
-  SATURN_DATA
+  SATURN_DATA,
+  MOONS_DATA
 } from './constants.js';
 import {
   createStarField,
@@ -22,6 +23,9 @@ import {
   createSaturnMesh,
   createSaturnRings
 } from './cosmo/saturn.js';
+import {
+  createMoons
+} from './cosmo/moons.js';
 import {
   declension
 } from './utils.js';
@@ -47,7 +51,7 @@ let yellowSunMesh, redSunMesh, yellowSunGlow, redSunGlow;
 let sunsOrbit;
 let planets = [];
 let saturnRings = [];
-let saturnGlow;
+let moons = [];
 
 function updateTimeScaleDisplay() {
   const hours = speedMultiplier;
@@ -127,8 +131,6 @@ function init() {
   scene.add(yellowSunGlow);
   scene.add(redSunGlow);
 
-
-
   // Planets
   planets = PLANETS_DATA.map((data, i) => {
     const orbit = createOrbitRing(data.orbitRadius, data.color, 128);
@@ -157,6 +159,13 @@ function init() {
     saturnRings = createSaturnRings(SATURN_DATA.rings);
     saturnRings.forEach((ring) => scene.add(ring));
   }
+
+  // Saturn's moons (added after Saturn)
+  moons = createMoons(MOONS_DATA);
+  moons.forEach((moon) => {
+    scene.add(moon.orbit);
+    scene.add(moon.mesh);
+  });
 
   // UI elements
   playPauseBtn = document.getElementById('play-pause-btn');
@@ -196,6 +205,9 @@ function init() {
     planets.forEach((planet) => {
       planet.orbit.visible = orbitsVisible;
     });
+    moons.forEach((moon) => {
+      moon.orbit.visible = orbitsVisible;
+    });
     toggleOrbitsBtn.textContent = orbitsVisible ? '⊕' : '⊗';
   });
 
@@ -217,7 +229,7 @@ function init() {
     }
 
     // Calculate angles directly from simTime (frame-rate independent)
-    const binaryAngle = (simTime * 2 * Math.PI) / ORBITAL_PERIODS.binarySystem;
+    const binaryAngle = (simTime * 2 * Math.PI) / SUNS_ORBITAL_PERIOD;
     
     yellowSunMesh.position.x = Math.cos(binaryAngle) * SUN_DATA.yellow.orbitRadius;
     yellowSunMesh.position.y = Math.sin(binaryAngle) * SUN_DATA.yellow.orbitRadius;
@@ -228,8 +240,8 @@ function init() {
     redSunGlow.position.copy(redSunMesh.position);
 
     // Update planet positions
-    planets.forEach((planet, i) => {
-      const planetAngle = (simTime * 2 * Math.PI) / ORBITAL_PERIODS.planets[i] + planet.angle;
+    planets.forEach((planet) => {
+      const planetAngle = (simTime * 2 * Math.PI) / planet.data.period + planet.angle;
       planet.mesh.position.x = Math.cos(planetAngle) * planet.data.orbitRadius;
       planet.mesh.position.y = Math.sin(planetAngle) * planet.data.orbitRadius;
     });
@@ -239,9 +251,18 @@ function init() {
       saturnRings.forEach((ring) => {
         ring.position.copy(saturnPlanet.mesh.position);
       });
-      if (saturnGlow) {
-        saturnGlow.position.copy(saturnPlanet.mesh.position);
-      }
+
+      // Sync moons orbit position with Saturn
+      moons.forEach((moon) => {
+        moon.orbit.position.copy(saturnPlanet.mesh.position);
+      });
+
+      // Update moon positions (orbit around Saturn)
+      moons.forEach((moon, i) => {
+        const moonAngle = (simTime * 2 * Math.PI) / moon.data.period + moon.angle;
+        moon.mesh.position.x = saturnPlanet.mesh.position.x + Math.cos(moonAngle) * moon.data.orbitRadius;
+        moon.mesh.position.y = saturnPlanet.mesh.position.y + Math.sin(moonAngle) * moon.data.orbitRadius;
+      });
     }
 
     controls.update();
