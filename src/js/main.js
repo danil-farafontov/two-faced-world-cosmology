@@ -1,7 +1,30 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { COLORS, ORBITAL_PERIODS, PLANETS_DATA, SUN_DATA, CAMERA_CONFIG, CONTROLS_CONFIG, SATURN_DATA } from './constants.js';
-import { createSaturnMesh, createSaturnRings, createSaturnGlow } from './saturn.js';
+import {
+  COLORS,
+  ORBITAL_PERIODS,
+  PLANETS_DATA,
+  SUN_DATA,
+  CAMERA_CONFIG,
+  CONTROLS_CONFIG,
+  SATURN_DATA
+} from './constants.js';
+import {
+  createStarField,
+  createGlowMesh
+} from './cosmo/effects.js';
+import {
+  createSunMesh,
+  createPlanetMesh,
+  createOrbitRing
+} from './cosmo/objects.js';
+import {
+  createSaturnMesh,
+  createSaturnRings
+} from './cosmo/saturn.js';
+import {
+  declension
+} from './utils.js';
 import '../css/base.css';
 import '../css/timeline.css';
 import '../css/info-panel.css';
@@ -21,19 +44,10 @@ let toggleOrbitsBtn, timeScaleValue, timeScaleUnit, infoPanel, closeInfoBtn;
 // References to scene objects for cleanup
 let scene, camera, renderer, controls, starField;
 let yellowSunMesh, redSunMesh, yellowSunGlow, redSunGlow;
-let yellowSunOrbit, redSunOrbit;
+let sunsOrbit;
 let planets = [];
 let saturnRings = [];
 let saturnGlow;
-
-function declension(n, forms) {
-  const n10 = n % 10;
-  const n100 = n % 100;
-  if (n100 >= 11 && n100 <= 19) return forms[2];
-  if (n10 === 1) return forms[0];
-  if (n10 >= 2 && n10 <= 4) return forms[1];
-  return forms[2];
-}
 
 function updateTimeScaleDisplay() {
   const hours = speedMultiplier;
@@ -55,73 +69,6 @@ function updateTimeScaleDisplay() {
 
   timeScaleValue.textContent = parts.join(', ');
   timeScaleUnit.textContent = '';
-}
-
-function createStarField(count, spread, size) {
-  const geometry = new THREE.BufferGeometry();
-  const positions = new Float32Array(count * 3);
-  const colors = new Float32Array(count * 3);
-  for (let i = 0; i < count; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * spread;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * spread;
-    positions[i * 3 + 2] = 0;
-    const brightness = 0.5 + Math.random() * 0.5;
-    colors[i * 3] = brightness;
-    colors[i * 3 + 1] = brightness;
-    colors[i * 3 + 2] = brightness + Math.random() * 0.2;
-  }
-  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-  const material = new THREE.PointsMaterial({
-    size,
-    vertexColors: true,
-    sizeAttenuation: false,
-  });
-  return new THREE.Points(geometry, material);
-}
-
-function createSunMesh(radius, color) {
-  const geometry = new THREE.CircleGeometry(radius, 32);
-  const material = new THREE.MeshBasicMaterial({ color });
-  return new THREE.Mesh(geometry, material);
-}
-
-function createGlowMesh(radius, color) {
-  const geometry = new THREE.CircleGeometry(radius * 1.5, 32);
-  const material = new THREE.MeshBasicMaterial({
-    color,
-    transparent: true,
-    opacity: 0.15,
-  });
-  return new THREE.Mesh(geometry, material);
-}
-
-function createOrbitRing(radius, color) {
-  const geometry = new THREE.RingGeometry(radius - 0.2, radius + 0.2, 64);
-  const material = new THREE.MeshBasicMaterial({
-    color,
-    transparent: true,
-    opacity: 0.5,
-    side: THREE.DoubleSide,
-  });
-  return new THREE.Mesh(geometry, material);
-}
-
-function createPlanetOrbitRing(radius, color) {
-  const geometry = new THREE.RingGeometry(radius - 0.1, radius + 0.1, 128);
-  const material = new THREE.MeshBasicMaterial({
-    color,
-    transparent: true,
-    opacity: 0.5,
-    side: THREE.DoubleSide,
-  });
-  return new THREE.Mesh(geometry, material);
-}
-
-function createPlanetMesh(radius, color) {
-  const geometry = new THREE.CircleGeometry(radius, 32);
-  const material = new THREE.MeshBasicMaterial({ color });
-  return new THREE.Mesh(geometry, material);
 }
 
 function init() {
@@ -164,36 +111,36 @@ function init() {
   starField = createStarField(2000, 4000, 2);
   scene.add(starField);
 
+  // Suns orbit
+  sunsOrbit = createOrbitRing(SUN_DATA.yellow.orbitRadius, COLORS.orbitOrange);
+  scene.add(sunsOrbit);
+
   // Suns
   yellowSunMesh = createSunMesh(SUN_DATA.yellow.radius, COLORS.sunYellow);
   redSunMesh = createSunMesh(SUN_DATA.red.radius, COLORS.sunRed);
   scene.add(yellowSunMesh);
   scene.add(redSunMesh);
 
+  // Suns glows
   yellowSunGlow = createGlowMesh(SUN_DATA.yellow.radius, COLORS.sunYellow);
   redSunGlow = createGlowMesh(SUN_DATA.red.radius, COLORS.sunRed);
   scene.add(yellowSunGlow);
   scene.add(redSunGlow);
 
-  // Sun orbits
-  yellowSunOrbit = createOrbitRing(SUN_DATA.yellow.orbitRadius, COLORS.orbitYellow);
-  redSunOrbit = createOrbitRing(SUN_DATA.red.orbitRadius, COLORS.orbitRed);
-  scene.add(yellowSunOrbit);
-  scene.add(redSunOrbit);
+
 
   // Planets
   planets = PLANETS_DATA.map((data, i) => {
+    const orbit = createOrbitRing(data.orbitRadius, data.color, 128);
+    scene.add(orbit);
+
     let mesh;
     if (data.isSaturn) {
       // Special Saturn with rings
       mesh = createSaturnMesh(data.radius, data.color);
-      saturnGlow = createSaturnGlow(data.radius, data.color);
-      scene.add(saturnGlow);
     } else {
       mesh = createPlanetMesh(data.radius, data.color);
     }
-    const orbit = createPlanetOrbitRing(data.orbitRadius, data.color);
-    scene.add(orbit);
     scene.add(mesh);
 
     return {
@@ -245,8 +192,7 @@ function init() {
 
   toggleOrbitsBtn.addEventListener('click', () => {
     orbitsVisible = !orbitsVisible;
-    yellowSunOrbit.visible = orbitsVisible;
-    redSunOrbit.visible = orbitsVisible;
+    sunsOrbit.visible = orbitsVisible;
     planets.forEach((planet) => {
       planet.orbit.visible = orbitsVisible;
     });

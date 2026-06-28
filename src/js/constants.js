@@ -4,8 +4,7 @@ export const COLORS = {
   background: 0x0a0a1a,
   sunYellow: 0xFFD700,
   sunRed: 0xFF4500,
-  orbitYellow: 0xFFD700,
-  orbitRed: 0xFF4500,
+  orbitOrange: 0xFFA000,
   orbitPlanet: 0x6666AA,
 };
 
@@ -67,9 +66,9 @@ export const PLANETS_DATA = [
   { name: 'Внутренняя', color: 0x888888, radius: 5,   orbitRadius: 285, description: 'Маленькая горячая планета, ближайшая к солнцам.' },
   { name: 'Вторая',     color: 0xAA7755, radius: 8,   orbitRadius: 380, description: 'Скалистая планета среднего размера.' },
   { name: 'Сатурн',     color: 0xD4A843, radius: 11,  orbitRadius: 600, description: 'Газовый гигант с кольцами — центральный объект системы.', isSaturn: true },
-  { name: 'Четвёртая',  color: 0xCC8855, radius: 14,  orbitRadius: 720, description: 'Газовый гигант, поменьше Сатурна.' },
-  { name: 'Пятая',      color: 0x88BBDD, radius: 12,  orbitRadius: 850, description: 'Ледяной гигант.' },
-  { name: 'Внешняя',    color: 0x666688, radius: 6,   orbitRadius: 1080, description: 'Далёкая маленькая планета.' },
+  { name: 'Четвёртая',  color: 0xCC8855, radius: 14,  orbitRadius: 820, description: 'Газовый гигант, поменьше Сатурна.' },
+  { name: 'Пятая',      color: 0x88BBDD, radius: 12,  orbitRadius: 950, description: 'Ледяной гигант.' },
+  { name: 'Внешняя',    color: 0x666688, radius: 6,   orbitRadius: 1180, description: 'Далёкая маленькая планета.' },
 ];
 
 // Saturn-specific data

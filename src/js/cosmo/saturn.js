@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 /**
- * Создаёт текстуру-полосы для газового гиганта (Сатурн).
+ * Creates a banded texture for a gas giant (Saturn).
  */
 function createGasGiantTexture(baseColor, radius) {
   const canvas = document.createElement('canvas');
@@ -9,12 +9,12 @@ function createGasGiantTexture(baseColor, radius) {
   canvas.height = 128;
   const ctx = canvas.getContext('2d');
 
-  // Базовые тона из основного цвета
+  // Base tones from the main color
   const r = (baseColor >> 16) & 0xff;
   const g = (baseColor >> 8) & 0xff;
   const b = baseColor & 0xff;
 
-  // Градиент полос
+  // Band gradient
   const gradient = ctx.createLinearGradient(0, 0, 0, 128);
   const shade = (v, f) => Math.min(255, Math.floor(v * f));
   const shadeDark = (v, f) => Math.max(0, Math.floor(v * f));
@@ -31,7 +31,7 @@ function createGasGiantTexture(baseColor, radius) {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, 256, 128);
 
-  // Шум по полосам
+  // Noise across bands
   for (let y = 0; y < 128; y++) {
     for (let x = 0; x < 256; x += 4) {
       const noise = Math.random() * 20 - 10;
@@ -45,7 +45,7 @@ function createGasGiantTexture(baseColor, radius) {
 }
 
 /**
- * Создаёт меш Сатурна (газовый гигант с полосатой текстурой).
+ * Creates a Saturn mesh (gas giant with banded texture).
  */
 export function createSaturnMesh(radius, baseColor) {
   const texture = createGasGiantTexture(baseColor, radius);
@@ -55,7 +55,7 @@ export function createSaturnMesh(radius, baseColor) {
 }
 
 /**
- * Создаёт одно кольцо Сатурна.
+ * Creates a single Saturn ring.
  */
 export function createSaturnRing(innerRadius, outerRadius, color, opacity) {
   const geometry = new THREE.RingGeometry(innerRadius, outerRadius, 64);
@@ -69,8 +69,8 @@ export function createSaturnRing(innerRadius, outerRadius, color, opacity) {
 }
 
 /**
- * Создаёт все кольца Сатурна и возвращает массив мешей.
- * Кольца создаются без привязки к планете — их позиции нужно обновлять вручную.
+ * Creates all Saturn rings and returns an array of meshes.
+ * Rings are created without planet binding — their positions must be updated manually.
  */
 export function createSaturnRings(ringConfigs) {
   return ringConfigs.map((config) => {
@@ -82,17 +82,4 @@ export function createSaturnRings(ringConfigs) {
     );
     return ring;
   });
-}
-
-/**
- * Создаёт эффект свечения вокруг Сатурна.
- */
-export function createSaturnGlow(radius, color) {
-  const geometry = new THREE.CircleGeometry(radius * 2.5, 32);
-  const material = new THREE.MeshBasicMaterial({
-    color,
-    transparent: true,
-    opacity: 0.08,
-  });
-  return new THREE.Mesh(geometry, material);
 }
