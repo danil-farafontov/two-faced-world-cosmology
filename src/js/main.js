@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { COLORS, ORBITAL_PERIODS, PLANETS_DATA, SUN_DATA, CAMERA_CONFIG, CONTROLS_CONFIG } from './constants.js';
+import { COLORS, ORBITAL_PERIODS, PLANETS_DATA, SUN_DATA, CAMERA_CONFIG, CONTROLS_CONFIG, SATURN_DATA } from './constants.js';
+import { createSaturnMesh, createSaturnRings, createSaturnGlow } from './saturn.js';
 import '../css/base.css';
 import '../css/timeline.css';
 import '../css/info-panel.css';
@@ -22,6 +23,8 @@ let scene, camera, renderer, controls, starField;
 let yellowSunMesh, redSunMesh, yellowSunGlow, redSunGlow;
 let yellowSunOrbit, redSunOrbit;
 let planets = [];
+let saturnRings = [];
+let saturnGlow;
 
 function declension(n, forms) {
   const n10 = n % 10;
@@ -180,7 +183,15 @@ function init() {
 
   // Planets
   planets = PLANETS_DATA.map((data, i) => {
-    const mesh = createPlanetMesh(data.radius, data.color);
+    let mesh;
+    if (data.isSaturn) {
+      // Special Saturn with rings
+      mesh = createSaturnMesh(data.radius, data.color);
+      saturnGlow = createSaturnGlow(data.radius, data.color);
+      scene.add(saturnGlow);
+    } else {
+      mesh = createPlanetMesh(data.radius, data.color);
+    }
     const orbit = createPlanetOrbitRing(data.orbitRadius, data.color);
     scene.add(orbit);
     scene.add(mesh);
@@ -192,6 +203,13 @@ function init() {
       angle: Math.random() * Math.PI * 2,
     };
   });
+
+  // Saturn rings (added after planets array is created)
+  const saturnPlanet = planets.find((p) => p.data.isSaturn);
+  if (saturnPlanet) {
+    saturnRings = createSaturnRings(SATURN_DATA.rings);
+    saturnRings.forEach((ring) => scene.add(ring));
+  }
 
   // UI elements
   playPauseBtn = document.getElementById('play-pause-btn');
@@ -269,6 +287,16 @@ function init() {
       planet.mesh.position.x = Math.cos(planetAngle) * planet.data.orbitRadius;
       planet.mesh.position.y = Math.sin(planetAngle) * planet.data.orbitRadius;
     });
+
+    // Sync Saturn rings position with Saturn
+    if (saturnPlanet) {
+      saturnRings.forEach((ring) => {
+        ring.position.copy(saturnPlanet.mesh.position);
+      });
+      if (saturnGlow) {
+        saturnGlow.position.copy(saturnPlanet.mesh.position);
+      }
+    }
 
     controls.update();
     renderer.render(scene, camera);

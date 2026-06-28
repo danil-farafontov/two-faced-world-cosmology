@@ -72,6 +72,16 @@ export const PLANETS_DATA = [
   { name: 'Внешняя',    color: 0x666688, radius: 6,   orbitRadius: 1080, description: 'Далёкая маленькая планета.' },
 ];
 
+// Saturn-specific data
+export const SATURN_DATA = {
+  rings: [
+    { innerRadius: 16, outerRadius: 19, color: 0xC8A868, opacity: 0.7 },  // Внутреннее
+    { innerRadius: 20, outerRadius: 25, color: 0xD4B878, opacity: 0.85 }, // Среднее
+    { innerRadius: 26, outerRadius: 30, color: 0xB89858, opacity: 0.6 },  // Внешнее
+  ],
+  ringColors: [0xC8A868, 0xD4B878, 0xB89858],
+};
+
 // Camera configuration
 export const CAMERA_CONFIG = {
   frustumSize: 1000,
