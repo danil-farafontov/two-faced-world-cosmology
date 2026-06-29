@@ -1,4 +1,3 @@
-const onethousandkm = 0.005098919;
 // Visual constants
 export const COLORS = {
   background: 0x0a0a1a,
@@ -6,6 +5,7 @@ export const COLORS = {
   sunRed: 0xFF4500,
   orbitOrange: 0xFFA000,
   orbitPlanet: 0x6666AA,
+  firmamentCone: 0xFFBF00
 };
 
 // Sun system configuration
@@ -117,7 +117,7 @@ export const SATURN_DATA = {
 export const MOONS_DATA = [
   {
     name: 'Мимас',
-    color: 0xCCCCCC,
+    color: 0x8B0000,
     radius: 3,
     orbitRadius: 38,
     period: 23, // 0.94 Earth days
@@ -126,18 +126,18 @@ export const MOONS_DATA = [
   },
   {
     name: 'Энцелад',
-    color: 0xE0F0FF,
+    color: 0xF4A460,
     radius: 3.5,
-    orbitRadius: 44,
+    orbitRadius: 47,
     period: 33, // 1.37 Earth days
     description: 'Планета разумного существа, огромный океан живой субстанции. Весь мир — один организм.',
     isInhabited: true
   },
   {
     name: 'Тефия',
-    color: 0xD0D0D0,
+    color: 0x6495ED,
     radius: 3.2,
-    orbitRadius: 50,
+    orbitRadius: 56,
     period: 45, // 1.89 Earth days
     description: 'Полузатопленный мир, портовые города на островах и побережьях.',
     isInhabited: true
@@ -146,34 +146,34 @@ export const MOONS_DATA = [
     name: 'Диона',
     color: 0xBBAA99,
     radius: 3.8,
-    orbitRadius: 56,
+    orbitRadius: 65,
     period: 66, // 2.74 Earth days
     description: 'TBD',
     isInhabited: true
   },
   {
     name: 'Рея',
-    color: 0x88CC88,
+    color: 0x228B22,
     radius: 4,
-    orbitRadius: 63,
+    orbitRadius: 75,
     period: 108, // 4.52 Earth days
     description: 'Мир Песнопевцев и Слепцов. Зелёный мир с растительностью, джунгли, грибы, споры.',
     isInhabited: true
   },
   {
     name: 'Титан',
-    color: 0xDDAA66,
+    color: 0xFFF0F5,
     radius: 4.5,
-    orbitRadius: 70,
+    orbitRadius: 85,
     period: 383, // 15.95 Earth days
     description: 'Скалистый мир алмазов и суровых воинов.',
     isInhabited: true
   },
   {
     name: 'Япет',
-    color: 0x8899AA,
+    color: 0x8B008B,
     radius: 3.5,
-    orbitRadius: 78,
+    orbitRadius: 96,
     period: 1904, // 79.32 Earth days
     description: 'Мир Сумерек и Рассвета. Тёмный и ледяной мир с биолюминесценцией ночью; пылающая огнём пустыня днём.',
     isInhabited: true

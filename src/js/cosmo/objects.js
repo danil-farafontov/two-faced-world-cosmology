@@ -17,3 +17,10 @@ export function createOrbitRing(radius, color, thetaSegments = 64) {
   const material = new THREE.MeshBasicMaterial({ color });
   return new THREE.Mesh(geometry, material);
 }
+
+export function createSelectedRing(radius) {
+  const geometry = new THREE.RingGeometry(radius - 0.5, radius + 0.5, 24);
+  const color = 0xFFFFFF;
+  const material = new THREE.MeshBasicMaterial({ color });
+  return new THREE.Mesh(geometry, material);
+}

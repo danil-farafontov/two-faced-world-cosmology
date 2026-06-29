@@ -52,6 +52,25 @@
   color: #d4b896;
 }
 
+#firmament-section {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #cd7f32;
+}
+
+#firmament-btn {
+  width: 100%;
+  padding: 8px;
+}
+
+.firmament-prompt {
+  font-size: 14px;
+  color: #b8860b;
+  text-align: center;
+  margin-top: 8px;
+  font-style: italic;
+}
+
 @media (max-width: 767px) {
   .info-panel {
     width: calc(100% - 40px);

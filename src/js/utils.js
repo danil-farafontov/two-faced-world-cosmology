@@ -6,3 +6,13 @@ export function declension(n, forms) {
   if (n10 >= 2 && n10 <= 4) return forms[1];
   return forms[2];
 }
+
+export function setCursorMode(cursorMode) {
+  if (cursorMode === 'moon-select') {
+    document.body.classList.remove('point-select-mode');
+    document.body.classList.add('moon-select-mode');
+  } else if (cursorMode === 'point-select') {
+    document.body.classList.add('point-select-mode');
+    document.body.classList.remove('moon-select-mode');
+  }
+}

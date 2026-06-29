@@ -17,7 +17,8 @@ import {
 import {
   createSunMesh,
   createPlanetMesh,
-  createOrbitRing
+  createOrbitRing,
+  createSelectedRing
 } from './cosmo/objects.js';
 import {
   createSaturnMesh,
@@ -27,7 +28,11 @@ import {
   createMoons
 } from './cosmo/moons.js';
 import {
-  declension
+  createFirmamentCone
+} from './cosmo/firmament.js';
+import {
+  declension,
+  setCursorMode
 } from './utils.js';
 import '../css/base.css';
 import '../css/timeline.css';
@@ -43,15 +48,26 @@ let orbitsVisible = true;
 
 // UI elements
 let playPauseBtn, timeSlider, timeDisplay, speedSlider, speedDisplay;
-let toggleOrbitsBtn, timeScaleValue, timeScaleUnit, infoPanel, closeInfoBtn;
+let toggleOrbitsBtn, firmamentBtn, timeScaleValue, timeScaleUnit, infoPanel, closeInfoBtn;
 
 // References to scene objects for cleanup
 let scene, camera, renderer, controls, starField;
 let yellowSunMesh, redSunMesh, yellowSunGlow, redSunGlow;
 let sunsOrbit;
 let planets = [];
+let saturnPlanet = null;
 let saturnRings = [];
 let moons = [];
+
+// firmament state
+let cursorMode = 'moon-select'; // 'moon-select', 'point-select'
+let selectedSpaceObject = null;
+let selectedSpaceObjectIndicator = null;
+let selectedFirmamentAngle = null;
+let firmamentCone = null;
+let pointOnMoonMarker = null;
+let guideLineToSetFirmamentCone = null;
+let firmamentConeSet = false;
 
 function updateTimeScaleDisplay() {
   const hours = speedMultiplier;
@@ -73,6 +89,62 @@ function updateTimeScaleDisplay() {
 
   timeScaleValue.textContent = parts.join(', ');
   timeScaleUnit.textContent = '';
+}
+
+/**
+ * Clear all firmament visualization from scene.
+ */
+function clearFirmamentVisualization() {
+  if (firmamentCone) {
+    scene.remove(firmamentCone);
+    firmamentCone.geometry.dispose();
+    firmamentCone.material.dispose();
+    firmamentCone = null;
+  }
+  if (pointOnMoonMarker) {
+    scene.remove(pointOnMoonMarker);
+    pointOnMoonMarker.geometry.dispose();
+    pointOnMoonMarker.material.dispose();
+    pointOnMoonMarker = null;
+  }
+  if (guideLineToSetFirmamentCone) {
+    scene.remove(guideLineToSetFirmamentCone);
+    guideLineToSetFirmamentCone.geometry.dispose();
+    guideLineToSetFirmamentCone.material.dispose();
+    guideLineToSetFirmamentCone = null;
+  }
+  firmamentConeSet = false;
+  selectedFirmamentAngle = null;
+  cursorMode = 'moon-select';
+  setCursorMode(cursorMode);
+}
+
+function getMouseWorldPos(event) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  const mouseX = event.clientX - rect.left;
+  const mouseY = event.clientY - rect.top;
+
+  const ndc = new THREE.Vector2(
+    (mouseX / window.innerWidth) * 2 - 1,
+    -(mouseY / window.innerHeight) * 2 + 1
+  );
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(ndc, camera);
+  return raycaster.ray.at(0, new THREE.Vector3());
+}
+
+function selectSpaceObject(object) {
+  selectedSpaceObject = object;
+  if (selectedSpaceObjectIndicator == null) {
+    // create new and add to the scene
+    selectedSpaceObjectIndicator = createSelectedRing(object.data.radius);
+    scene.add(selectedSpaceObjectIndicator);
+  } else {
+    // remove current and add new to the scene
+    scene.remove(selectedSpaceObjectIndicator);
+    selectedSpaceObjectIndicator = createSelectedRing(object.data.radius);
+    scene.add(selectedSpaceObjectIndicator);
+  }
 }
 
 function init() {
@@ -154,7 +226,7 @@ function init() {
   });
 
   // Saturn rings (added after planets array is created)
-  const saturnPlanet = planets.find((p) => p.data.isSaturn);
+  saturnPlanet = planets.find((p) => p.data.isSaturn);
   if (saturnPlanet) {
     saturnRings = createSaturnRings(SATURN_DATA.rings);
     saturnRings.forEach((ring) => scene.add(ring));
@@ -174,6 +246,7 @@ function init() {
   speedSlider = document.getElementById('speed-slider');
   speedDisplay = document.getElementById('speed-display');
   toggleOrbitsBtn = document.getElementById('toggle-orbits-btn');
+  firmamentBtn = document.getElementById('firmament-btn');
   timeScaleValue = document.getElementById('time-scale-value');
   timeScaleUnit = document.getElementById('time-scale-unit');
   infoPanel = document.getElementById('info-panel');
@@ -211,8 +284,92 @@ function init() {
     toggleOrbitsBtn.textContent = orbitsVisible ? '⊕' : '⊗';
   });
 
+  firmamentBtn.addEventListener('click', () => {
+    if (cursorMode === 'moon-select') {
+      clearFirmamentVisualization();
+      // Start point selection
+      cursorMode = 'point-select';
+      setCursorMode(cursorMode);
+    } else if (cursorMode === 'point-select') {
+      // Cancel point selection
+      cursorMode = 'moon-select';
+      setCursorMode(cursorMode);
+    }
+  });
+
   closeInfoBtn.addEventListener('click', () => {
     infoPanel.classList.add('hidden');
+    clearFirmamentVisualization();
+    cursorMode = 'moon-select';
+    setCursorMode(cursorMode);
+    firmamentConeSet = false;
+  });
+
+  // Mouse move - track cursor position for guide line
+  let mouseWorldPos = null;
+
+  renderer.domElement.addEventListener('mousemove', (event) => {
+    if (cursorMode !== 'point-select') return; // we need to track mouse position only in point-select mode
+    mouseWorldPos = getMouseWorldPos(event);
+  });
+
+  // Click handler for moon-select mode
+  renderer.domElement.addEventListener('click', (event) => {
+
+    const worldPoint = getMouseWorldPos(event);
+
+    if (cursorMode === 'moon-select') {
+      // Clear old cone when selecting a new moon
+      clearFirmamentVisualization();
+
+      for (const moon of moons) {
+        const dx = worldPoint.x - moon.mesh.position.x;
+        const dy = worldPoint.y - moon.mesh.position.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist <= moon.data.radius + 5) {
+          selectSpaceObject(moon);
+
+          document.getElementById('info-title').textContent = moon.data.name;
+          document.getElementById('info-details').innerHTML = '';
+          document.getElementById('info-description').textContent = moon.data.description;
+          infoPanel.classList.remove('hidden');
+          break;
+        }
+      }
+    } else if (cursorMode === 'point-select' && selectedSpaceObject) {
+      const moonPos = selectedSpaceObject.mesh.position;
+      const moonRadius = selectedSpaceObject.data.radius;
+
+      const dx = worldPoint.x - moonPos.x; //diff between cursor.x and moon.x
+      const dy = worldPoint.y - moonPos.y;
+      const dist = Math.sqrt(dx * dx + dy * dy); // dist between click and moon
+
+      if (dist > 0) {
+        const nx = dx / dist;
+        const ny = dy / dist;
+        const surfaceX = moonPos.x + nx * moonRadius;
+        const surfaceY = moonPos.y + ny * moonRadius;
+        selectedFirmamentAngle = Math.atan2(ny, nx);
+
+        firmamentCone = createFirmamentCone(
+          300,
+          { x: surfaceX, y: surfaceY },
+          selectedFirmamentAngle,
+          COLORS.firmamentCone,
+          0.2
+        );
+        scene.add(firmamentCone);
+        firmamentConeSet = true;
+
+        scene.remove(guideLineToSetFirmamentCone);
+        guideLineToSetFirmamentCone = null;
+
+        // Switch back to moon-select mode
+        cursorMode = 'moon-select';
+        setCursorMode(cursorMode);
+      }
+    }
   });
 
   // Animation loop
@@ -263,6 +420,78 @@ function init() {
         moon.mesh.position.x = saturnPlanet.mesh.position.x + Math.cos(moonAngle) * moon.data.orbitRadius;
         moon.mesh.position.y = saturnPlanet.mesh.position.y + Math.sin(moonAngle) * moon.data.orbitRadius;
       });
+    }
+
+    // Update selected object indicator position
+    if (selectedSpaceObjectIndicator != null && isPlaying) {
+      //selectedSpaceObject.mesh.rotateZ(((dt * speedMultiplier) * 2 * Math.PI) / selectedSpaceObject.data.period);
+      selectedSpaceObjectIndicator.position.x = selectedSpaceObject.mesh.position.x;
+      selectedSpaceObjectIndicator.position.y = selectedSpaceObject.mesh.position.y;
+
+      // Update firmamentCode position
+      if (firmamentConeSet === true) {
+        selectedFirmamentAngle += ((dt * speedMultiplier) * 2 * Math.PI) / selectedSpaceObject.data.period;
+        const xnew
+          = selectedSpaceObject.mesh.position.x
+            + selectedSpaceObject.data.radius * Math.cos(selectedFirmamentAngle);
+        const ynew
+          = selectedSpaceObject.mesh.position.y
+            + selectedSpaceObject.data.radius * Math.sin(selectedFirmamentAngle);
+        firmamentCone.position.x = xnew;
+        firmamentCone.position.y = ynew;
+        firmamentCone.rotateZ(((dt * speedMultiplier) * 2 * Math.PI) / selectedSpaceObject.data.period);
+
+        pointOnMoonMarker.position.set(xnew, ynew, 0);
+      }
+    }
+
+    // Update guide line and point marker in point-select mode (before cone is set)
+    if (cursorMode === 'point-select' && selectedSpaceObject && !firmamentConeSet) {
+      const moonPos = selectedSpaceObject.mesh.position;
+      const moonRadius = selectedSpaceObject.data.radius;
+
+      if (mouseWorldPos) {
+        const dx = mouseWorldPos.x - moonPos.x;
+        const dy = mouseWorldPos.y - moonPos.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (guideLineToSetFirmamentCone) {
+          scene.remove(guideLineToSetFirmamentCone);
+          guideLineToSetFirmamentCone.geometry.dispose();
+          guideLineToSetFirmamentCone.material.dispose();
+        }
+        const linePoints = [
+          new THREE.Vector3(moonPos.x, moonPos.y, 0),
+          new THREE.Vector3(mouseWorldPos.x, mouseWorldPos.y, 0),
+        ];
+        const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+        const lineMat = new THREE.LineBasicMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.5,
+        });
+        guideLineToSetFirmamentCone = new THREE.Line(lineGeo, lineMat);
+        scene.add(guideLineToSetFirmamentCone);
+
+        if (dist > 0) {
+          const nx = dx / dist;
+          const ny = dy / dist;
+          const surfaceX = moonPos.x + nx * moonRadius;
+          const surfaceY = moonPos.y + ny * moonRadius;
+
+          if (pointOnMoonMarker) {
+            scene.remove(pointOnMoonMarker);
+            pointOnMoonMarker.geometry.dispose();
+            pointOnMoonMarker.material.dispose();
+          }
+          pointOnMoonMarker = new THREE.Mesh(
+            new THREE.CircleGeometry(2, 16),
+            new THREE.MeshBasicMaterial({ color: 0xffbf00, depthTest: false })
+          );
+          pointOnMoonMarker.position.set(surfaceX, surfaceY, 0);
+          scene.add(pointOnMoonMarker);
+        }
+      }
     }
 
     controls.update();
