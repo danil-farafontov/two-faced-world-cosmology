@@ -32,7 +32,9 @@ import {
 } from './cosmo/firmament.js';
 import {
   declension,
-  setCursorMode
+  setCursorMode,
+  startCameraAnimation,
+  updateCameraAnimation
 } from './utils.js';
 import '../css/base.css';
 import '../css/timeline.css';
@@ -183,6 +185,7 @@ function init() {
   controls.minZoom = CONTROLS_CONFIG.minZoom;
   controls.maxZoom = CONTROLS_CONFIG.maxZoom;
 
+
   // Star field
   starField = createStarField(2000, 4000, 2);
   scene.add(starField);
@@ -329,6 +332,8 @@ function init() {
 
         if (dist <= moon.data.radius + 5) {
           selectSpaceObject(moon);
+
+          startCameraAnimation(camera, controls, saturnPlanet.mesh.position);
 
           document.getElementById('info-title').textContent = moon.data.name;
           document.getElementById('info-details').innerHTML = '';
@@ -495,6 +500,7 @@ function init() {
     }
 
     controls.update();
+    updateCameraAnimation(camera, controls);
     renderer.render(scene, camera);
   }
 

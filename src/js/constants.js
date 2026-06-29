@@ -182,7 +182,7 @@ export const MOONS_DATA = [
 
 // Camera configuration
 export const CAMERA_CONFIG = {
-  frustumSize: 1000,
+  frustumSize: 1500, // Increased from 1000 to fit Saturn's orbit (radius 600, diameter 1200) + Saturn's moons
   near: 1,
   far: 10000,
   position: { x: 0, y: 0, z: 1 },
