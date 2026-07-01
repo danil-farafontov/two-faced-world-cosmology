@@ -120,7 +120,7 @@ export const MOONS_DATA = [
     color: 0x8B0000,
     radius: 3,
     orbitRadius: 38,
-    period: 23, // 0.94 Earth days
+    period: 24, // 1.0 Earth days
     description: 'Мир Императора. Мир с развитой цивилизацией, имперский город-государство.',
     isInhabited: true
   },
@@ -129,7 +129,7 @@ export const MOONS_DATA = [
     color: 0xF4A460,
     radius: 3.5,
     orbitRadius: 47,
-    period: 33, // 1.37 Earth days
+    period: 48.0024, // 2.0001 Earth days
     description: 'Планета разумного существа, огромный океан живой субстанции. Весь мир — один организм.',
     isInhabited: true
   },
@@ -138,7 +138,7 @@ export const MOONS_DATA = [
     color: 0x6495ED,
     radius: 3.2,
     orbitRadius: 56,
-    period: 45, // 1.89 Earth days
+    period: 96.0048, // 4.0002 Earth days
     description: 'Полузатопленный мир, портовые города на островах и побережьях.',
     isInhabited: true
   },
@@ -147,7 +147,7 @@ export const MOONS_DATA = [
     color: 0xBBAA99,
     radius: 3.8,
     orbitRadius: 65,
-    period: 66, // 2.74 Earth days
+    period: 192.0096, // 8.0004 Earth days
     description: 'TBD',
     isInhabited: true
   },
@@ -156,7 +156,7 @@ export const MOONS_DATA = [
     color: 0x228B22,
     radius: 4,
     orbitRadius: 75,
-    period: 108, // 4.52 Earth days
+    period: 384.0192, // 16.0008 Earth days
     description: 'Мир Песнопевцев и Слепцов. Зелёный мир с растительностью, джунгли, грибы, споры.',
     isInhabited: true
   },
@@ -165,7 +165,7 @@ export const MOONS_DATA = [
     color: 0xFFF0F5,
     radius: 4.5,
     orbitRadius: 85,
-    period: 383, // 15.95 Earth days
+    period: 768.0384, // 32.0016 Earth days
     description: 'Скалистый мир алмазов и суровых воинов.',
     isInhabited: true
   },
@@ -174,7 +174,7 @@ export const MOONS_DATA = [
     color: 0x8B008B,
     radius: 3.5,
     orbitRadius: 96,
-    period: 1904, // 79.32 Earth days
+    period: 1536.0768, // 64.0032 Earth days
     description: 'Мир Сумерек и Рассвета. Тёмный и ледяной мир с биолюминесценцией ночью; пылающая огнём пустыня днём.',
     isInhabited: true
   },
