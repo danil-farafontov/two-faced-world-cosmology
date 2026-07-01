@@ -5,12 +5,12 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-  entry: './src/js/main.js',
+  entry: './src/js-legacy/main.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.[contenthash].js',
+    filename: 'legacy/bundle.[contenthash].js',
     clean: true,
-    assetModuleFilename: 'assets/[hash][ext][query]',
+    assetModuleFilename: 'legacy/assets/[hash][ext][query]',
   },
   module: {
     rules: [
@@ -39,10 +39,17 @@ module.exports = {
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './public/index.html',
-      title: 'Миры Двуликого',
+      filename: 'index.html',
+      title: 'Миры Двуликого (ООП)',
+      inject: false,
+    }),
+    new HtmlWebpackPlugin({
+      template: './public/legacy.html',
+      filename: 'legacy/index.html',
+      title: 'Миры Двуликого (Legacy)',
     }),
     new MiniCssExtractPlugin({
-      filename: 'style.[contenthash].css',
+      filename: 'legacy/style.[contenthash].css',
     }),
   ],
   devServer: {
