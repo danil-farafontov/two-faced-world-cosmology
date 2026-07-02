@@ -11,6 +11,8 @@ class CelestialBody {
     this.parentBody = parentBody;
     this.mesh = null;
     this.position = new THREE.Vector3(0, 0, 0);
+    this.orbitMesh = null;
+    this.showOrbit = data.showOrbit ?? true; // Flag for toggling visibility via UI
 
     this.startAngle = data.startAngle || 0;
   }
@@ -42,6 +44,30 @@ class CelestialBody {
     this.mesh.position.copy(this.position);
   }
 
+  createOrbitLine() {
+    if (this.orbitRadius <= 0) return;
+
+    const points = [];
+    for (let i = 0; i < 64; i++) {
+      const angle = (i / 64) * Math.PI * 2;
+      const x = this.orbitRadius * Math.cos(angle);
+      const y = this.orbitRadius * Math.sin(angle);
+      points.push(new THREE.Vector3(x, y, 0));
+    }
+
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.LineBasicMaterial({ color: this.color });
+    material.side = THREE.DoubleSide;
+
+    this.orbitMesh = new THREE.LineLoop(geometry, material);
+    this.orbitMesh.position.set(0, 0, 0);
+
+    if (this.parentBody) {
+      this.orbitMesh.position.x += this.parentBody.position.x;
+      this.orbitMesh.position.y += this.parentBody.position.y;
+    }
+  }
+
   update(simTime) {
     if (this.orbitalPeriod > 0) {
       const angle = this.startAngle + ((simTime * 2 * Math.PI) / this.orbitalPeriod);
@@ -56,6 +82,12 @@ class CelestialBody {
         this.position.y += this.parentBody.position.y;
       }
       this.mesh.position.copy(this.position);
+
+      if (this.orbitMesh) {
+        this.orbitMesh.position.x = this.parentBody ? this.parentBody.position.x : 0;
+        this.orbitMesh.position.y = this.parentBody ? this.parentBody.position.y : 0;
+        this.orbitMesh.visible = this.showOrbit;
+      }
     }
   }
 }

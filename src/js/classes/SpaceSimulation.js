@@ -93,15 +93,18 @@ class SpaceSimulation {
     // Yellow Sun
     const yellowSun = new Star(SUN_DATA.yellow);
     yellowSun.createMesh();
+    yellowSun.createOrbitLine();
     this.scene.add(yellowSun.mesh);
+    this.scene.add(yellowSun.orbitMesh);
     this.celestialObjects.push(yellowSun);
-    console.log("added Y sun");
+
     // Red Sun
     const redSun = new Star(SUN_DATA.red);
     redSun.createMesh();
+    redSun.createOrbitLine();
     this.scene.add(redSun.mesh);
+    this.scene.add(redSun.orbitMesh);
     this.celestialObjects.push(redSun);
-    console.log("added R sun");
   }
 
   _animate() {
