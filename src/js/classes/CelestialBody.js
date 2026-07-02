@@ -34,7 +34,12 @@ class CelestialBody {
     const startX = Math.cos(this.startAngle) * this.orbitRadius;
     const startY = Math.sin(this.startAngle) * this.orbitRadius;
 
-    this.mesh.position.set(startX, startY, zOffset);
+    this.position.set(startX, startY, zOffset);
+    if (this.parentBody) {
+      this.position.x += this.parentBody.position.x;
+      this.position.y += this.parentBody.position.y;
+    }
+    this.mesh.position.copy(this.position);
   }
 
   update(simTime) {
@@ -43,10 +48,12 @@ class CelestialBody {
 
       const localX = Math.cos(angle) * this.orbitRadius;
       const localY = Math.sin(angle) * this.orbitRadius;
-      this.position.set(localX, localY, this.mesh.position.z);
+      this.position.x = localX;
+      this.position.y = localY;
 
       if (this.parentBody) {
-        this.position.add(this.parentBody.position);
+        this.position.x += this.parentBody.position.x;
+        this.position.y += this.parentBody.position.y;
       }
       this.mesh.position.copy(this.position);
     }
