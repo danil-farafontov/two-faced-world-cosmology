@@ -29,13 +29,25 @@ two-faced-world-cosmology/
 │   └── index.html
 ├── src/
 │   ├── js/
-│   │   ├── main.js
+│   │   ├── managers/
+│   │   │   ├── TimeManager.js
+│   │   │   ├── CalendarSystem.js
+│   │   │   ├── CameraController.js
+│   │   │   └── InputHandler.js
+│   │   └── entities/
+│   │       ├── CelestialBody.js
+│   │       ├── Star.js
+│   │       ├── Planet.js
+│   │       └── Moon.js
+│   ├── js-legacy/               # Legacy procedural implementation (for comparison/migration)
+│   │   ├── cosmo/
+│   │   │   ├── effects.js
+│   │   │   ├── moons.js
+│   │   │   ├── objects.js
+│   │   │   └── saturn.js
 │   │   ├── constants.js
-│   │   ├── utils.js
-│   │   └── cosmo/
-│   │       ├── effects.js
-│   │       ├── objects.js
-│   │       └── saturn.js
+│   │   ├── main.js              # Original entry point
+│   │   └── utils.js
 │   └── css/
 │       ├── base.css
 │       ├── timeline.css
@@ -120,7 +132,8 @@ two-faced-world-cosmology/
 - [x] Setup Three.js with orthographic camera (top-down view)
 - [x] Create starry sky (particles)
 - [x] Add two suns with rotation
-- [x] OrbitControls (zooming + panning)
+- [x] OrbitControls (zooming and panning)
+- **Technical Note:** Ensure `material.side = THREE.DoubleSide` for all flat meshes to prevent Z-fighting and visibility issues in top-down view. Adjust camera near/far planes dynamically if precision loss occurs during zoom.
 
 ### Stage 2: Orbits and Planets
 - [x] Orbit lines for all objects
@@ -155,29 +168,26 @@ two-faced-world-cosmology/
 - [x] Default scale should fit Saturn's orbit completely within the screen.
 - [x] Selecting a moon → zoom camera to the moon
 
-### Stage 7: Transition to OOP
+### Stage 7: Transition to OOP (Refined)
 - [x] **Architecture for parallel transition:**
   - [x] Current imperative version is moved to `src/js-legacy/` and served by nginx at `/legacy/`
   - [x] OOP version becomes primary and is served at `/`
-  - [x] Two entry points in webpack: `./src/js/main.js` (legacy) and `./src/js/main.js` (OOP)
+  - [x] Two entry points in webpack: `./src/js/main-oop.js` (OOP) and `./src/js-legacy/main.js` (legacy)
   - [x] Two sections in nginx server config for serving different URLs
-- [ ] **OOP Classes:**
-  - [ ] `SpaceSimulation` — main orchestrator. Creates scene, renderer, camera, starts animation loop. Properties: `scene`, `camera`, `renderer`, `timeManager`, `uiManager`, `celestialObjects` (array of instances).
-  - [ ] `CelestialBody` — parent class for all celestial objects. Constructor takes only its own data and reference to parent body (if any). Encapsulates mesh creation, orbit calculation, and click logic.
+- [ ] **New Classes & Utilities:**
+  - [x] `SpaceSimulation` — main orchestrator. Creates scene, renderer, camera, starts animation loop. Properties: `scene`, `camera`, `renderer`, `timeManager`, `uiManager`, `celestialObjects` (array of instances).
   - [x] `TimeManager` — encapsulates `simTime`, `isPlaying`, `speedMultiplier`. Provides orchestrator with a clean interface for getting current time.
-  - [ ] `UIManager` — bridge between HTML page and 3D engine. Takes over DOM selectors, click handlers, updating panel text.
-  - [ ] Child classes: `Star`, `Planet`, `Moon` (from `CelestialBody`).
-- [ ] **Iterative OOP Implementation:**
-  - [ ] Implement "Stage 1: Basic Scene" in OOP (suns + stars).
-  - [ ] Implement "Stage 2: Orbits and Planets" in OOP.
-  - [ ] Implement "Stage 3: Saturn-like Planet" in OOP.
-  - [ ] Implement "Stage 4: Saturn's Moons" in OOP.
-  - [ ] Implement "Stage 5: Visibility Cone" in OOP.
-  - [ ] Implement "Stage 6: Improving Camera Scale Handling" in OOP.
-  - [ ] Camera animation on selection — for all objects (suns, planets, moons).
-  - [ ] Selected object indicator — for all objects.
-  - [ ] Info popup — for all objects.
-  - [ ] Sky dome cone — only for moons, as part of Three.js scene.
+  - [ ] `InputHandler`: Manages DOM events, Raycasting logic, and Screen-to-World coordinate conversion. Decouples interaction from rendering.
+  - [ ] `CameraController`: Handles smooth camera transitions (lerping) between zoom levels (Overview -> Saturn -> Moon).
+  - [ ] `CalendarSystem`: Decouples fantasy date calculation from simulation time (`simTime`). Provides formatted dates for UI.
+- [ ] **Iterative OOP Implementation (Step-by-Step):**
+  - [ ] **Step 1:** Implement `CalendarSystem`. Verify time logic independently of rendering.
+  - [ ] **Step 2:** Create base class `CelestialBody`. Migrate *one* static object (e.g., a placeholder planet) to this class. Verify mesh creation and basic state management.
+  - [ ] **Step 3:** Implement `Star` class. Migrate the two suns. Verify orbital motion using parametric equations: `angle = (simTime * 2π) / orbitalPeriod`.
+  - [ ] **Step 4:** Implement `Planet` and `Moon` classes. Migrate Saturn and its moons. Verify ring rendering and moon orbits.
+  - [ ] **Step 5:** Implement `InputHandler` integration. Connect raycasting to the new entity structure for selection logic.
+  - [ ] **Step 6:** Implement `CameraController`. Add smooth zoom/pan transitions when selecting objects.
+  - [ ] **Step 7:** Finalize `SpaceSimulation` orchestrator. Ensure all systems work together.
 
 ### Stage 8: Timeline
 - [ ] Decide on the calendar. Which calendar to use? What are the fantasy month names? What is the composition of the year and months?
@@ -215,8 +225,8 @@ two-faced-world-cosmology/
 - `dist/` — build output (deployment-ready files)
 
 **Configuration:**
-- **entry** — `src/main.js` (entry point)
-- **output** — `dist/bundle.js`
+- **entry** — `src/main.js` (primary entry point for OOP version) and `src/js-legacy/main.js` (legacy fallback)
+- **output** — `dist/bundle.js` (and potentially separate bundles if needed, but typically one main bundle is sufficient if legacy is just a different entry)
 - **modules:**
   - `babel-loader` — JS transpilation (ES6+ → compatible JS)
   - `css-loader` + `style-loader` — CSS module processing
