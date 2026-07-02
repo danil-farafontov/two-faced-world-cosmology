@@ -177,11 +177,12 @@ two-faced-world-cosmology/
 - [ ] **New Classes & Utilities:**
   - [x] `SpaceSimulation` — main orchestrator. Creates scene, renderer, camera, starts animation loop. Properties: `scene`, `camera`, `renderer`, `timeManager`, `uiManager`, `celestialObjects` (array of instances).
   - [x] `TimeManager` — encapsulates `simTime`, `isPlaying`, `speedMultiplier`. Provides orchestrator with a clean interface for getting current time.
+  - [x] CalendarSystem (Merged into TimeManager)
   - [ ] `InputHandler`: Manages DOM events, Raycasting logic, and Screen-to-World coordinate conversion. Decouples interaction from rendering.
   - [ ] `CameraController`: Handles smooth camera transitions (lerping) between zoom levels (Overview -> Saturn -> Moon).
   - [ ] `CalendarSystem`: Decouples fantasy date calculation from simulation time (`simTime`). Provides formatted dates for UI.
 - [ ] **Iterative OOP Implementation (Step-by-Step):**
-  - [ ] **Step 1:** Implement `CalendarSystem`. Verify time logic independently of rendering.
+  - [x] **Step 1:** Implement CalendarSystem. (Note: Time and Calendar logic is fully implemented inside TimeManager.js)
   - [ ] **Step 2:** Create base class `CelestialBody`. Migrate *one* static object (e.g., a placeholder planet) to this class. Verify mesh creation and basic state management.
   - [ ] **Step 3:** Implement `Star` class. Migrate the two suns. Verify orbital motion using parametric equations: `angle = (simTime * 2π) / orbitalPeriod`.
   - [ ] **Step 4:** Implement `Planet` and `Moon` classes. Migrate Saturn and its moons. Verify ring rendering and moon orbits.
