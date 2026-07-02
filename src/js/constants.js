@@ -1,0 +1,41 @@
+// Visual constants
+export const COLORS = {
+  background: 0x0a0a1a,
+  sunYellow: 0xFFD700,
+  sunRed: 0xFF4500,
+  orbitOrange: 0xFFA000,
+};
+
+// Binary system orbital period in hours (14 days)
+export const SUNS_ORBITAL_PERIOD = 336;
+
+// Sun system configuration
+export const SUN_DATA = {
+  yellow: {
+    radius: 30,
+    orbitRadius: 100,
+    color: COLORS.sunYellow,
+  },
+  red: {
+    radius: 30,
+    orbitRadius: 100,
+    color: COLORS.sunRed,
+  },
+};
+
+// Camera configuration
+export const CAMERA_CONFIG = {
+  frustumSize: 1500,
+  near: 1,
+  far: 10000,
+  position: { x: 0, y: 0, z: 1 },
+};
+
+// Controls configuration
+export const CONTROLS_CONFIG = {
+  enableRotate: false,
+  enableZoom: true,
+  enablePan: true,
+  minZoom: 0.1,
+  maxZoom: 10,
+};
