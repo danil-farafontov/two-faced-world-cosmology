@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { COLORS, SUNS_ORBITAL_PERIOD, SUN_DATA, CAMERA_CONFIG, CONTROLS_CONFIG } from '../constants.js';
 import { TimeManager } from './TimeManager.js';
+import Star from './Star.js';
 
 class SpaceSimulation {
   constructor(container) {
@@ -14,13 +15,10 @@ class SpaceSimulation {
 
     this.timeManager = new TimeManager();
     this.starField = null;
-    this.sunMeshes = [];
-    this.glowMeshes = [];
-    this.sunsOrbit = null;
+    this.celestialObjects = [];
 
     this._createStarField();
-    this._createSunsOrbit();
-    this._createSuns();
+    this.initEntities();
 
     this._animate = this._animate.bind(this);
   }
@@ -91,53 +89,19 @@ class SpaceSimulation {
     this.scene.add(this.starField);
   }
 
-  _createSunsOrbit() {
-    const geometry = new THREE.RingGeometry(SUN_DATA.yellow.orbitRadius - 0.5, SUN_DATA.yellow.orbitRadius + 0.5, 64);
-    const material = new THREE.MeshBasicMaterial({ color: COLORS.orbitOrange });
-    this.sunsOrbit = new THREE.Mesh(geometry, material);
-    this.scene.add(this.sunsOrbit);
-  }
-
-  _createSuns() {
-    const sunConfigs = [
-      { data: SUN_DATA.yellow, angleOffset: 0 },
-      { data: SUN_DATA.red, angleOffset: Math.PI },
-    ];
-
-    sunConfigs.forEach(({ data, angleOffset }) => {
-      // Sun mesh
-      const geometry = new THREE.CircleGeometry(data.radius, 32);
-      const material = new THREE.MeshBasicMaterial({ color: data.color });
-      const mesh = new THREE.Mesh(geometry, material);
-      this.scene.add(mesh);
-      this.sunMeshes.push(mesh);
-
-      // Glow mesh
-      const glowGeometry = new THREE.CircleGeometry(data.radius * 1.5, 32);
-      const glowMaterial = new THREE.MeshBasicMaterial({
-        color: data.color,
-        transparent: true,
-        opacity: 0.15,
-      });
-      const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
-      this.scene.add(glowMesh);
-      this.glowMeshes.push(glowMesh);
-    });
-  }
-
-  _updateSuns(simTime) {
-    const binaryAngle = (simTime * 2 * Math.PI) / SUNS_ORBITAL_PERIOD;
-
-    this.sunMeshes.forEach((mesh, i) => {
-      const angle = binaryAngle + (i === 0 ? 0 : Math.PI);
-      const radius = SUN_DATA.yellow.orbitRadius;
-      mesh.position.x = Math.cos(angle) * radius;
-      mesh.position.y = Math.sin(angle) * radius;
-    });
-
-    this.glowMeshes.forEach((glow, i) => {
-      glow.position.copy(this.sunMeshes[i].position);
-    });
+  initEntities() {
+    // Yellow Sun
+    const yellowSun = new Star(SUN_DATA.yellow);
+    yellowSun.createMesh();
+    this.scene.add(yellowSun.mesh);
+    this.celestialObjects.push(yellowSun);
+    console.log("added Y sun");
+    // Red Sun
+    const redSun = new Star(SUN_DATA.red);
+    redSun.createMesh();
+    this.scene.add(redSun.mesh);
+    this.celestialObjects.push(redSun);
+    console.log("added R sun");
   }
 
   _animate() {
@@ -145,7 +109,9 @@ class SpaceSimulation {
 
     this.timeManager.update();
 
-    this._updateSuns(this.timeManager.simTime);
+    for (const entity of this.celestialObjects) {
+      entity.update(this.timeManager.simTime);
+    }
 
     this.controls.update();
     this.renderer.render(this.scene, this.camera);

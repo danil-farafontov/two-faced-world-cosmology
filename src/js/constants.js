@@ -6,20 +6,25 @@ export const COLORS = {
   orbitOrange: 0xFFA000,
 };
 
-// Binary system orbital period in hours (14 days)
-export const SUNS_ORBITAL_PERIOD = 336;
-
 // Sun system configuration
 export const SUN_DATA = {
   yellow: {
+    name: "Желтое Солнце",
+    type: "Star",
     radius: 30,
+    orbitalPeriod: 336,
     orbitRadius: 100,
     color: COLORS.sunYellow,
+    startAngle: 2 * Math.PI
   },
   red: {
+    name: "Красное Солнце",
+    type: "Star",
     radius: 30,
+    orbitalPeriod: 336,
     orbitRadius: 100,
     color: COLORS.sunRed,
+    startAngle: Math.PI
   },
 };
 

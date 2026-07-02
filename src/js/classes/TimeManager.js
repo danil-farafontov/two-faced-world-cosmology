@@ -1,67 +1,68 @@
 export class TimeManager {
   constructor(config = {}) {
-    this.simTime = 0;              // Текущее время симуляции в ЧАСАХ (дробное число)
-    this._isPlaying = true;        // Приватное свойство для паузы
-    this.speedMultiplier = 1;      // Сколько симуляционных ЧАСОВ проходит за 1 реальную СЕКУНДУ
+    this.simTime = 0;              // Current simulation time in HOURS (float number)
+    this._isPlaying = true;        // private field for pause
+    this.speedMultiplier = 1;      // How many simulation HOURS pass per 1 real SECOND
     this.lastFrameTime = performance.now();
 
-    this.globalEvents = [];        // Массив для хранения исторических событий лора
+    this.globalEvents = [];        // Array to store historical lore events
 
     // Константы вашего лора
     this.HOURS_PER_MIMAS_DAY = 24;
 
     this.calendar = {
-      daysInMonth: 32,             // Двоичный месяц
-      monthsInYear: 8,             // Двоичный год (всего 256 дней Мимаса в году)
-      monthNames: config.monthNames || ['Янус', 'Эпиметей', 'Мимас', 'Энцелад', 'Тефия', 'Диона', 'Рея', 'Титан'],
+      daysInMonth: 32,             // Binary month
+      monthsInYear: 8,             // Binary year (256 Mimas'es days in a year)
+      monthNames: config.monthNames || [
+        'Янус', 'Эпиметей', 'Мимас', 'Энцелад', 'Тефия', 'Диона', 'Рея', 'Титан'
+      ],
       startYear: config.startYear || 1
     };
 
-    // Предрасчет весов для быстрой конвертации дат
-    this.HOURS_PER_MONTH = this.HOURS_PER_MIMAS_DAY * this.calendar.daysInMonth; // 768 часов
-    this.HOURS_PER_YEAR = this.HOURS_PER_MONTH * this.calendar.monthsInYear;     // 6144 часа
+    // Pre-calculated weights for quick date conversion
+    this.HOURS_PER_MONTH = this.HOURS_PER_MIMAS_DAY * this.calendar.daysInMonth; // 768 hours
+    this.HOURS_PER_YEAR = this.HOURS_PER_MONTH * this.calendar.monthsInYear;     // 6144 hours
   }
 
-  // Геттер и Сеттер для красивого управления паузой (как просил ваш ИИ)
   get playing() {
     return this._isPlaying;
   }
 
   set playing(value) {
     this._isPlaying = value;
-    // ОЧЕНЬ ВАЖНО: при снятии с паузы сбрасываем таймер кадра на текущий момент,
-    // чтобы не было микро-рывка, если код паузы перепишется в будущем
-    if (value === true) {
+    // VERY IMPORTANT: reset lastFrameTime to current time
+    // to prevent micro lag
+    /*if (value === true) {
       this.lastFrameTime = performance.now();
-    }
+    }*/
   }
 
-  // Главный цикл (вызывается в requestAnimationFrame)
+  // Main loop (called in requestAnimationFrame)
   update() {
     const now = performance.now();
     const dtSeconds = (now - this.lastFrameTime) / 1000;
-    this.lastFrameTime = now; // Таймер кадра обновляется ВСЕГДА, предотвращая прыжки времени
+    this.lastFrameTime = now; // updated ALWAYS, prevent jumps in time
 
     if (!this._isPlaying) return;
 
     const previousTime = this.simTime;
 
-    // Прибавляем симуляционные часы, прошедшие за этот кадр
+    // Adding simulation hours passed by this frame
     this.simTime += dtSeconds * this.speedMultiplier;
 
-    // Проверяем глобальные события по ходу движения времени вперед
+    // check global historical lore events while time moving forward
     if (this.simTime > previousTime) {
       this._checkEvents(previousTime, this.simTime);
     }
   }
 
-  // 1. Метод ручной установки времени (для ползунка таймлайна или тестов)
+  // 1. Function to set time manually (for timeline slider or for testing)
   setSimTime(hours) {
     this.simTime = hours;
     this._syncEventTriggers();
   }
 
-  // 2. Конвертация: симуляционные часы -> красивый объект фэнтези-даты
+  // 2. Convert simulation hours -> nive object with fantasy date
   simTimeToDate(hoursFloat) {
     const totalHours = Math.floor(hoursFloat);
     const totalDays = Math.floor(totalHours / this.HOURS_PER_MIMAS_DAY);
@@ -84,12 +85,12 @@ export class TimeManager {
     };
   }
 
-  // 3. Конвертация (ОБРАТНАЯ): объект даты -> симуляционные часы (для UI календаря)
-  // Принимает объект вида: { year: 5, month: 2, day: 10, hour: 14 }
+  // 3. Reverse convert: date object -> sim hours (for UI of the calendar)
+  // Accept object: { year: 5, month: 2, day: 10, hour: 14 }
   dateToSimTime(dateObj) {
     const relativeYear = dateObj.year - this.calendar.startYear;
-    const month = dateObj.month || 0; // Индекс месяца от 0 до 7
-    const day = (dateObj.day || 1) - 1; // Дни переводим в индекс от 0
+    const month = dateObj.month || 0; // Month's index from 0 to 7
+    const day = (dateObj.day || 1) - 1; // Days convert to indexes from 0
     const hour = dateObj.hour || 0;
 
     return (
@@ -100,9 +101,9 @@ export class TimeManager {
     );
   }
 
-  // 4. Добавление глобального события лора (например, по часам или по объекту даты)
+  // 4. Add global historical lore event (for example by hours or by date object)
   addGlobalEvent(timeInput, title, callback) {
-    // Метод умный: принимает или готовые часы (число), или объект даты
+    // Smart function: accepts hours as number or date object
     const targetHours = typeof timeInput === 'number' ? timeInput : this.dateToSimTime(timeInput);
 
     this.globalEvents.push({
@@ -113,12 +114,12 @@ export class TimeManager {
     });
   }
 
-  // Оптимизированная проверка триггеров событий (без лагов)
+  // Optimzied check of event's triggers
   _checkEvents(fromTime, toTime) {
     for (let i = 0; i < this.globalEvents.length; i++) {
       const event = this.globalEvents[i];
 
-      // Если симуляция идет вперед и мы пересекли временную отметку события
+      // If simulation going forward and we crossed event's time mark
       if (!event.triggered && event.targetTime <= toTime) {
         event.triggered = true;
         event.callback(event);
@@ -126,18 +127,17 @@ export class TimeManager {
     }
   }
 
-  // Сброс триггеров при перемотке времени назад/вперед через календарь
+  // Reset event's triggers on time scrolling via valendar
   _syncEventTriggers() {
     this.globalEvents.forEach(event => {
       event.triggered = event.targetTime < this.simTime;
     });
   }
 
-  // Удобный метод для вывода текущей даты симуляции на UI-часы
+  // Useful function to get current simulation time to display to time UI
   getFormattedTime() {
     const c = this.simTimeToDate(this.simTime);
     const pad = (num) => String(num).padStart(2, '0');
-    // Исправлено: теперь выводится "г." вместо "сек."
     return `${pad(c.day)} ${c.monthName} ${c.year} г., ${pad(c.hour)}:00`;
   }
 
