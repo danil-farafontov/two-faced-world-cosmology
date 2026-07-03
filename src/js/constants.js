@@ -15,7 +15,8 @@ export const SUN_DATA = {
     orbitalPeriod: 336,
     orbitRadius: 100,
     color: COLORS.sunYellow,
-    startAngle: 2 * Math.PI
+    startAngle: 2 * Math.PI,
+    glowEnabled: true
   },
   red: {
     name: "Красное Солнце",
@@ -24,7 +25,8 @@ export const SUN_DATA = {
     orbitalPeriod: 336,
     orbitRadius: 100,
     color: COLORS.sunRed,
-    startAngle: Math.PI
+    startAngle: Math.PI,
+    glowEnabled: true
   },
 };
 

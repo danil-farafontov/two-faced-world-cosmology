@@ -4,17 +4,28 @@ class CelestialBody {
   constructor(data, parentBody = null) {
     this.name = data.name;
     this.type = data.type;
-    this.radius = data.radius;
+
+
     this.color = data.color;
+
+    this.radius = data.radius;
     this.orbitalPeriod = data.orbitalPeriod; // in simulation hours
     this.orbitRadius = data.orbitRadius;
+
     this.parentBody = parentBody;
+
     this.mesh = null;
     this.position = new THREE.Vector3(0, 0, 0);
+
     this.orbitMesh = null;
     this.showOrbit = data.showOrbit ?? true; // Flag for toggling visibility via UI
 
-    this.startAngle = data.startAngle || 0;
+    this.glowEnabled = data.glowEnabled ?? false;
+    this.glowColor = data.glowColor ?? data.color;
+    this.glowScale = data.glowScale ?? 1.3;
+    this.glowMesh = null;
+
+    this.startAngle = data.startAngle ?? 0;
   }
 
   createMesh() {
@@ -41,6 +52,49 @@ class CelestialBody {
       this.position.y += this.parentBody.position.y;
     }
     this.mesh.position.copy(this.position);
+    if (this.glowEnabled) {
+      this.createGlowMesh();
+    }
+  }
+
+  createGlowMesh() {
+    const glowRadius = this.radius * this.glowScale * 2;
+    const geometry = new THREE.RingGeometry(this.radius, glowRadius, 32);
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        glowColor: { value: new THREE.Color(this.glowColor) },
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 glowColor;
+        varying vec2 vUv;
+        void main() {
+          // Вычисляем расстояние от центра квадрата (0.5, 0.5)
+          float dist = length(vUv - vec2(0.5));
+
+          // Если вышли за пределы радиуса круга (0.5), отсекаем пиксели
+          if (dist > 0.5) discard;
+
+          // Инвертируем и сглаживаем: в центре (dist=0) alpha = 1.0, на краю (dist=0.5) alpha = 0.0
+          // Мягкое затухание от центра к краям
+          float alpha = smoothstep(0.5, 0.0, dist);
+
+          // Для эффекта интенсивности можно возвести в степень (например, pow(alpha, 2.0))
+          gl_FragColor = vec4(glowColor, alpha);
+        }
+      `,
+      transparent: true,
+      blending: THREE.AdditiveBlending
+    });
+
+    this.glowMesh = new THREE.Mesh(geometry, material);
+    this.mesh.add(this.glowMesh);
   }
 
   createOrbitLine() {
