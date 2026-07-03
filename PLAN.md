@@ -183,8 +183,8 @@ two-faced-world-cosmology/
   - [ ] `CalendarSystem`: Decouples fantasy date calculation from simulation time (`simTime`). Provides formatted dates for UI.
 - [ ] **Iterative OOP Implementation (Step-by-Step):**
   - [x] **Step 1:** Implement CalendarSystem. (Note: Time and Calendar logic is fully implemented inside TimeManager.js)
-  - [ ] **Step 2:** Create base class `CelestialBody`. Migrate *one* static object (e.g., a placeholder planet) to this class. Verify mesh creation and basic state management.
-  - [ ] **Step 3:** Implement `Star` class. Migrate the two suns. Verify orbital motion using parametric equations: `angle = (simTime * 2π) / orbitalPeriod`.
+  - [x] **Step 2:** Create base class `CelestialBody`. Migrate *one* static object (e.g., a placeholder planet) to this class. Verify mesh creation and basic state management.
+  - [x] **Step 3:** Implement `Star` class. Migrate the two suns. Verify orbital motion using parametric equations: `angle = (simTime * 2π) / orbitalPeriod`.
   - [ ] **Step 4:** Implement `Planet` and `Moon` classes. Migrate Saturn and its moons. Verify ring rendering and moon orbits.
   - [ ] **Step 5:** Implement `InputHandler` integration. Connect raycasting to the new entity structure for selection logic.
   - [ ] **Step 6:** Implement `CameraController`. Add smooth zoom/pan transitions when selecting objects.
