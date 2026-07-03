@@ -190,29 +190,36 @@ two-faced-world-cosmology/
   - [ ] **Step 6:** Implement `CameraController`. Add smooth zoom/pan transitions when selecting objects.
   - [ ] **Step 7:** Finalize `SpaceSimulation` orchestrator. Ensure all systems work together.
 
-### Stage 8: Timeline
+### Stage 8: Features
+- [ ] Textures
+- [ ] Rotation of celestial objects
+- [ ] Light
+
+### Stage 9: Timeline
 - [ ] Decide on the calendar. Which calendar to use? What are the fantasy month names? What is the composition of the year and months?
 - [ ] Set default positions for all celestial objects and bind them to a specific date
 - [ ] Date selection (year, month, day) from fantasy calendar
 - [ ] Display current date (year, month, day, hour, minute, second) — dynamically change date while animation is running
 - [ ] Date selection → calculate positions of celestial objects at the selected time point
 
-### Stage 9: Interface (Fantasy Style)
+### Stage 10: Interface (Fantasy Style)
 - [ ] Information panel (parchment style)
 - [ ] Timeline in ancient map style
 - [ ] Rune separators and icons
 - [ ] Time speed control
 
-### Stage 10: Adaptation
+### Stage 11: Adaptation?
 - [ ] Tablet screens (768px+)
 - [ ] Desktop screens (1024px+)
 - [ ] Control optimization (touch + mouse)
 
-### Stage 11: Polishing
-- [ ] Glow effects (bloom)
+### Stage 21: Polishing
+- [ ] Glow effects (bloom)?
 - [ ] Transition animations between scale modes
 - [ ] Performance optimization
 - [ ] Testing on real devices
+
+
 
 ## Build and Deployment
 
