@@ -31,56 +31,56 @@ export const SPACE_OBJECTS = [
   {
     name: 'Внутренняя',
     type: "Planet",
-    color: 0x888888,
     radius: 5,
-    orbitRadius: 285,
     orbitalPeriod: 1416, // 59 Earth days
+    orbitRadius: 285,
+    color: 0x888888,
     description: 'Маленькая горячая планета, ближайшая к солнцам. (59 дней)'
   },
   {
     name: 'Вторая',
     type: "Planet",
-    color: 0xAA7755,
     radius: 8,
-    orbitRadius: 380,
     orbitalPeriod: 5400, // 225 Earth days
+    orbitRadius: 380,
+    color: 0xAA7755,
     description: 'Скалистая планета среднего размера. (225 дней)'
   },
   {
     name: 'Сатурн',
     type: "Planet",
-    color: 0xD4A843,
     radius: 11,
-    orbitRadius: 600,
     orbitalPeriod: 181440, // 22.5 Earth years
+    orbitRadius: 600,
+    color: 0xD4A843,
     description: 'Газовый гигант с кольцами — центральный объект системы. (22.5 лет)',
     isSaturn: true
   },
   {
     name: 'Четвёртая',
     type: "Planet",
-    color: 0xCC8855,
     radius: 14,
-    orbitRadius: 820,
     orbitalPeriod: 806400, // 100 Earth years
+    orbitRadius: 820,
+    color: 0xCC8855,
     description: 'Газовый гигант, поменьше Сатурна. (100 лет)'
   },
   {
     name: 'Пятая',
     type: "Planet",
-    color: 0x88BBDD,
     radius: 12,
-    orbitRadius: 950,
     orbitalPeriod: 1330560, // 165 Earth years
+    orbitRadius: 950,
+    color: 0x88BBDD,
     description: 'Ледяной гигант. (165 лет)'
   },
   {
     name: 'Внешняя',
     type: "Planet",
-    color: 0x666688,
     radius: 6,
-    orbitRadius: 1180,
     orbitalPeriod: 63753984, // 7906 Earth years
+    orbitRadius: 1180,
+    color: 0x666688,
     description: 'Далёкая маленькая планета. (7906 лет)'
   }
 ];

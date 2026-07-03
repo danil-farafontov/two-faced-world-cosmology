@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { COLORS, SUNS_ORBITAL_PERIOD, SPACE_OBJECTS, CAMERA_CONFIG, CONTROLS_CONFIG } from '../constants.js';
 import { TimeManager } from './TimeManager.js';
 import Star from './Star.js';
+import Planet from './Planet.js';
 
 class SpaceSimulation {
   constructor(container) {
@@ -91,14 +92,20 @@ class SpaceSimulation {
 
   initEntities() {
 
-    for (const spaceObject of SPACE_OBJECTS) {
-      if (spaceObject.type === "Star") {
-        let star = new Star(spaceObject);
-        star.createMesh()
-        star.createOrbitLine();
-        this.scene.add(star.mesh);
-        this.scene.add(star.orbitMesh);
-        this.spaceObjects.push(star);
+    for (const spaceObjectData of SPACE_OBJECTS) {
+      let spaceObject = null;
+      if (spaceObjectData.type === "Star") {
+        spaceObject = new Star(spaceObjectData);
+      }
+      if (spaceObjectData.type === "Planet") {
+        spaceObject = new Planet(spaceObjectData);
+      }
+      if (spaceObject != null) {
+        spaceObject.createMesh()
+        spaceObject.createOrbitLine();
+        this.scene.add(spaceObject.mesh);
+        this.scene.add(spaceObject.orbitMesh);
+        this.spaceObjects.push(spaceObject);
       }
     }
   }
