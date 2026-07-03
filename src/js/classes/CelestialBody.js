@@ -22,21 +22,20 @@ class CelestialBody {
     const material = new THREE.MeshBasicMaterial({ color: this.color });
     material.side = THREE.DoubleSide;
 
-    // Add a subtle Z-offset to avoid Z-fighting
-    let zOffset = 0;
-    if (this.type.includes('Star')) {
-      zOffset = 0;
-    } else if (this.type.includes('Planet')) {
-      zOffset = 0.1;
-    } else if (this.type.includes('Moon')) {
-      zOffset = 0.2;
-    }
     this.mesh = new THREE.Mesh(geometry, material);
+    if (this.type.includes('Star')) {
+      this.mesh.renderOrder = 3; // Stars on top
+    } else if (this.type.includes('Planet')) {
+      this.mesh.renderOrder = 2; // Planets in the middle
+    } else if (this.type.includes('Moon')) {
+      this.mesh.renderOrder = 4; // Moons on top of planets
+    }
 
     const startX = Math.cos(this.startAngle) * this.orbitRadius;
     const startY = Math.sin(this.startAngle) * this.orbitRadius;
 
-    this.position.set(startX, startY, zOffset);
+    // Set initial position to Z = 0
+    this.position.set(startX, startY, 0);
     if (this.parentBody) {
       this.position.x += this.parentBody.position.x;
       this.position.y += this.parentBody.position.y;
@@ -66,6 +65,9 @@ class CelestialBody {
       this.orbitMesh.position.x += this.parentBody.position.x;
       this.orbitMesh.position.y += this.parentBody.position.y;
     }
+
+    // Set orbit mesh to render at the very bottom layer
+    this.orbitMesh.renderOrder = 1; // Orbits always underneath everything
   }
 
   update(simTime) {
