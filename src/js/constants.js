@@ -7,7 +7,7 @@ export const COLORS = {
 };
 
 // Sun system configuration
-export const SUN_DATA = {
+export const CELESTIAL_OBJECTS = {
   yellow: {
     name: "Желтое Солнце",
     type: "Star",

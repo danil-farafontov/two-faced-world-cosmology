@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { COLORS, SUNS_ORBITAL_PERIOD, SUN_DATA, CAMERA_CONFIG, CONTROLS_CONFIG } from '../constants.js';
+import { COLORS, SUNS_ORBITAL_PERIOD, CELESTIAL_OBJECTS, CAMERA_CONFIG, CONTROLS_CONFIG } from '../constants.js';
 import { TimeManager } from './TimeManager.js';
 import Star from './Star.js';
 
@@ -91,7 +91,7 @@ class SpaceSimulation {
 
   initEntities() {
     // Yellow Sun
-    const yellowSun = new Star(SUN_DATA.yellow);
+    const yellowSun = new Star(CELESTIAL_OBJECTS.yellow);
     yellowSun.createMesh();
     yellowSun.createOrbitLine();
     this.scene.add(yellowSun.mesh);
@@ -99,7 +99,7 @@ class SpaceSimulation {
     this.celestialObjects.push(yellowSun);
 
     // Red Sun
-    const redSun = new Star(SUN_DATA.red);
+    const redSun = new Star(CELESTIAL_OBJECTS.red);
     redSun.createMesh();
     redSun.createOrbitLine();
     this.scene.add(redSun.mesh);
