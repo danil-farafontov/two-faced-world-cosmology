@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
-class CelestialBody {
-  constructor(data, parentBody = null) {
+class SpaceObject {
+  constructor(data, parentObject = null) {
     this.name = data.name;
     this.type = data.type;
 
@@ -12,7 +12,7 @@ class CelestialBody {
     this.orbitalPeriod = data.orbitalPeriod; // in simulation hours
     this.orbitRadius = data.orbitRadius;
 
-    this.parentBody = parentBody;
+    this.parentObject = parentObject;
 
     this.mesh = null;
     this.position = new THREE.Vector3(0, 0, 0);
@@ -47,9 +47,9 @@ class CelestialBody {
 
     // Set initial position to Z = 0
     this.position.set(startX, startY, 0);
-    if (this.parentBody) {
-      this.position.x += this.parentBody.position.x;
-      this.position.y += this.parentBody.position.y;
+    if (this.parentObject) {
+      this.position.x += this.parentObject.position.x;
+      this.position.y += this.parentObject.position.y;
     }
     this.mesh.position.copy(this.position);
     if (this.glowEnabled) {
@@ -115,9 +115,9 @@ class CelestialBody {
     this.orbitMesh = new THREE.LineLoop(geometry, material);
     this.orbitMesh.position.set(0, 0, 0);
 
-    if (this.parentBody) {
-      this.orbitMesh.position.x += this.parentBody.position.x;
-      this.orbitMesh.position.y += this.parentBody.position.y;
+    if (this.parentObject) {
+      this.orbitMesh.position.x += this.parentObject.position.x;
+      this.orbitMesh.position.y += this.parentObject.position.y;
     }
 
     // Set orbit mesh to render at the very bottom layer
@@ -133,19 +133,19 @@ class CelestialBody {
       this.position.x = localX;
       this.position.y = localY;
 
-      if (this.parentBody) {
-        this.position.x += this.parentBody.position.x;
-        this.position.y += this.parentBody.position.y;
+      if (this.parentObject) {
+        this.position.x += this.parentObject.position.x;
+        this.position.y += this.parentObject.position.y;
       }
       this.mesh.position.copy(this.position);
 
       if (this.orbitMesh) {
-        this.orbitMesh.position.x = this.parentBody ? this.parentBody.position.x : 0;
-        this.orbitMesh.position.y = this.parentBody ? this.parentBody.position.y : 0;
+        this.orbitMesh.position.x = this.parentObject ? this.parentObject.position.x : 0;
+        this.orbitMesh.position.y = this.parentObject ? this.parentObject.position.y : 0;
         this.orbitMesh.visible = this.showOrbit;
       }
     }
   }
 }
 
-export default CelestialBody;
+export default SpaceObject;

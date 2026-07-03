@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { COLORS, SUNS_ORBITAL_PERIOD, CELESTIAL_OBJECTS, CAMERA_CONFIG, CONTROLS_CONFIG } from '../constants.js';
+import { COLORS, SUNS_ORBITAL_PERIOD, SPACE_OBJECTS, CAMERA_CONFIG, CONTROLS_CONFIG } from '../constants.js';
 import { TimeManager } from './TimeManager.js';
 import Star from './Star.js';
 
@@ -15,7 +15,7 @@ class SpaceSimulation {
 
     this.timeManager = new TimeManager();
     this.starField = null;
-    this.celestialObjects = [];
+    this.spaceObjects = [];
 
     this._createStarField();
     this.initEntities();
@@ -90,21 +90,17 @@ class SpaceSimulation {
   }
 
   initEntities() {
-    // Yellow Sun
-    const yellowSun = new Star(CELESTIAL_OBJECTS.yellow);
-    yellowSun.createMesh();
-    yellowSun.createOrbitLine();
-    this.scene.add(yellowSun.mesh);
-    this.scene.add(yellowSun.orbitMesh);
-    this.celestialObjects.push(yellowSun);
 
-    // Red Sun
-    const redSun = new Star(CELESTIAL_OBJECTS.red);
-    redSun.createMesh();
-    redSun.createOrbitLine();
-    this.scene.add(redSun.mesh);
-    this.scene.add(redSun.orbitMesh);
-    this.celestialObjects.push(redSun);
+    for (const spaceObject of SPACE_OBJECTS) {
+      if (spaceObject.type === "Star") {
+        let star = new Star(spaceObject);
+        star.createMesh()
+        star.createOrbitLine();
+        this.scene.add(star.mesh);
+        this.scene.add(star.orbitMesh);
+        this.spaceObjects.push(star);
+      }
+    }
   }
 
   _animate() {
@@ -112,7 +108,7 @@ class SpaceSimulation {
 
     this.timeManager.update();
 
-    for (const entity of this.celestialObjects) {
+    for (const entity of this.spaceObjects) {
       entity.update(this.timeManager.simTime);
     }
 

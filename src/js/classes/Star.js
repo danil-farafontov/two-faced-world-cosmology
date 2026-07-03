@@ -1,8 +1,8 @@
-import CelestialBody from './CelestialBody.js';
+import SpaceObject from './SpaceObject.js';
 
-class Star extends CelestialBody {
-  constructor(data, parentBody = null) {
-    super(data, parentBody);
+class Star extends SpaceObject {
+  constructor(data, parentObject = null) {
+    super(data, parentObject);
   }
 
   createMesh() {
