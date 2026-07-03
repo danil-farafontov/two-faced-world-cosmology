@@ -11,6 +11,7 @@ class SpaceSimulation {
     this.scene.background = new THREE.Color(COLORS.background);
 
     this.camera = this._createCamera();
+    this.scene.add(this.camera);
     this.renderer = this._createRenderer(container);
     this.controls = this._createControls();
 
@@ -69,7 +70,7 @@ class SpaceSimulation {
     for (let i = 0; i < count; i++) {
       positions[i * 3] = (Math.random() - 0.5) * spread;
       positions[i * 3 + 1] = (Math.random() - 0.5) * spread;
-      positions[i * 3 + 2] = 0;
+      positions[i * 3 + 2] = -5;
 
       const brightness = 0.5 + Math.random() * 0.5;
       colors[i * 3] = brightness;
@@ -87,11 +88,10 @@ class SpaceSimulation {
     });
 
     this.starField = new THREE.Points(geometry, material);
-    this.scene.add(this.starField);
+    this.camera.add(this.starField);
   }
 
   initEntities() {
-
     for (const spaceObjectData of SPACE_OBJECTS) {
       let spaceObject = null;
       if (spaceObjectData.type === "Star") {
@@ -120,6 +120,14 @@ class SpaceSimulation {
     }
 
     this.controls.update();
+
+    // Prevent star field from zooming
+    if (this.starField) {
+        // Calculate reverse zoom (for example if zoom = 2 then scale = 0.5)
+        const inverseZoom = 1 / this.camera.zoom;
+        this.starField.scale.set(inverseZoom, inverseZoom, 1);
+    }
+
     this.renderer.render(this.scene, this.camera);
   }
 
