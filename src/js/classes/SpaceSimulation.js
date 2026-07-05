@@ -4,6 +4,7 @@ import { COLORS, SUNS_ORBITAL_PERIOD, SPACE_OBJECTS, CAMERA_CONFIG, CONTROLS_CON
 import { TimeManager } from './TimeManager.js';
 import Star from './Star.js';
 import Planet from './Planet.js';
+import Moon from './Moon.js';
 
 class SpaceSimulation {
   constructor(container) {
@@ -99,9 +100,22 @@ class SpaceSimulation {
       }
       if (spaceObjectData.type === "Planet") {
         spaceObject = new Planet(spaceObjectData);
+        if (
+          typeof spaceObjectData.moons !== "undefined"
+          && spaceObjectData.moons.length > 0
+        ) {
+          for (const moonData of spaceObjectData.moons) {
+            let moonObject = new Moon(moonData, spaceObject);
+            moonObject.createMesh();
+            moonObject.createOrbitLine();
+            this.scene.add(moonObject.mesh);
+            this.scene.add(moonObject.orbitMesh);
+            this.spaceObjects.push(moonObject);
+          }
+        }
       }
       if (spaceObject != null) {
-        spaceObject.createMesh()
+        spaceObject.createMesh();
         spaceObject.createOrbitLine();
         this.scene.add(spaceObject.mesh);
         this.scene.add(spaceObject.orbitMesh);

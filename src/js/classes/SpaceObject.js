@@ -7,6 +7,8 @@ class SpaceObject {
 
 
     this.color = data.color;
+    this.textureGeneratorFunc = typeof data.textureGeneratorFunc === 'function' ? data.textureGeneratorFunc : null;
+    this.textureGeneratorParams = data.textureGeneratorParams ?? null;
 
     this.radius = data.radius;
     this.orbitalPeriod = data.orbitalPeriod; // in simulation hours
@@ -28,10 +30,38 @@ class SpaceObject {
     this.startAngle = data.startAngle ?? 0;
   }
 
+  #createTextureFromFunction() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 256;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+
+      this.textureGeneratorParams.ctx = ctx;
+      this.textureGeneratorFunc(this.textureGeneratorParams);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      return texture;
+  }
+
   createMesh() {
-    const geometry = new THREE.CircleGeometry(this.radius, 32);
-    const material = new THREE.MeshBasicMaterial({ color: this.color });
-    material.side = THREE.DoubleSide;
+    const geometry = new THREE.CircleGeometry(this.radius, 48);
+    let material;
+    if (this.textureGeneratorFunc == null) {
+      material = new THREE.MeshBasicMaterial({ color: this.color });
+      material.side = THREE.DoubleSide;
+    } else {
+      const generatedTexture = this.#createTextureFromFunction();
+      material = new THREE.MeshBasicMaterial({
+          map: generatedTexture
+      });
+      /*
+      // Use this when enable light in future
+      this.material = new THREE.MeshLambertMaterial({
+          map: generatedTexture
+      });
+      */
+    }
 
     this.mesh = new THREE.Mesh(geometry, material);
     if (this.type.includes('Star')) {
