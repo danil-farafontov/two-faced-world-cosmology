@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { COLORS, SUNS_ORBITAL_PERIOD, SPACE_OBJECTS, CAMERA_CONFIG, CONTROLS_CONFIG } from '../constants.js';
+import { COLORS, CAMERA_CONFIG, CONTROLS_CONFIG } from '../constants/constants.js';
+import { SPACE_OBJECTS } from '../constants/space-objects-data.js';
 import { TimeManager } from './TimeManager.js';
-import Star from './entities/Star.js';
-import Planet from './entities/Planet.js';
-import Moon from './entities/Moon.js';
+import { InteractionManager } from './InteractionManager.js';
+import Star from '../objects/Star.js';
+import Planet from '../objects/Planet.js';
+import Moon from '../objects/Moon.js';
 
 class SpaceSimulation {
   constructor(container) {
@@ -22,6 +24,12 @@ class SpaceSimulation {
 
     this._createStarField();
     this.initEntities();
+
+    this.interactionManager = new InteractionManager(
+      this.camera,
+      this.renderer.domElement, // pass canvas
+      this.spaceObjects
+    );
 
     this._animate = this._animate.bind(this);
   }

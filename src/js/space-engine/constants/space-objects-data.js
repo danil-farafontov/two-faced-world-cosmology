@@ -1,11 +1,5 @@
-import { createGasGiantTexture } from './textureGenerators.js';
-// Visual constants
-export const COLORS = {
-  background: 0x0a0a1a,
-  sunYellow: 0xFFD700,
-  sunRed: 0xFF4500,
-  orbitOrange: 0xFFA000,
-};
+import { COLORS } from './constants.js';
+import { createGasGiantTexture } from '../utils/texture-generators.js';
 
 // Sun system configuration
 export const SPACE_OBJECTS = [
@@ -164,20 +158,3 @@ export const SPACE_OBJECTS = [
     description: 'Далёкая маленькая планета. (7906 лет)'
   }
 ];
-
-// Camera configuration
-export const CAMERA_CONFIG = {
-  frustumSize: 1500,
-  near: 1,
-  far: 10000,
-  position: { x: 0, y: 0, z: 1 },
-};
-
-// Controls configuration
-export const CONTROLS_CONFIG = {
-  enableRotate: false,
-  enableZoom: true,
-  enablePan: true,
-  minZoom: 0.1,
-  maxZoom: 10,
-};

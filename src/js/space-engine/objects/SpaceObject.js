@@ -30,6 +30,15 @@ class SpaceObject {
     this.startAngle = data.startAngle ?? 0;
   }
 
+  onClick() {
+    console.log(`SpaceObject.onClick() - Clicked: ${this.type} - ${this.name}`);
+
+    // Send global event
+    window.dispatchEvent(new CustomEvent('space-object-selected', {
+      detail: { name: this.name, type: this.type }
+    }));
+  }
+
   #createTextureFromFunction() {
       const canvas = document.createElement('canvas');
       canvas.width = 256;

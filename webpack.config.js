@@ -1,3 +1,4 @@
+const { VueLoaderPlugin } = require('vue-loader');
 const path = require('path');
 const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -17,6 +18,10 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -54,6 +59,7 @@ module.exports = {
     ],
   },
   plugins: [
+    new VueLoaderPlugin(),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './public/index-oop.html',
@@ -93,11 +99,13 @@ module.exports = {
     allowedHosts: 'all',
   },
   resolve: {
+    extensions: ['.js', '.vue', '.json'],
     alias: {
       '@js': path.resolve(__dirname, 'src/js'),
       '@scss': path.resolve(__dirname, 'src/scss'),
       '@css': path.resolve(__dirname, 'src/css-procedural'),
       '@assets': path.resolve(__dirname, 'src/assets'),
+      'vue': 'vue/dist/vue.esm-bundler.js',
     },
   },
   performance: {

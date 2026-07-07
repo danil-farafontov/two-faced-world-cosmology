@@ -26,22 +26,29 @@ two-faced-world-cosmology/
 ├── PLAN.md
 ├── README.md
 ├── public/
-│   ├── index.html
 │   ├── index-oop.html
 │   └── index-procedural.html
 ├── src/
 │   ├── js/                          # OOP version (main)
-│   │   ├── classes/
-│   │   │   ├── entities/
-│   │   │   │   ├── CelestialBody.js
-│   │   │   │   ├── Star.js
-│   │   │   │   ├── Planet.js
-│   │   │   │   └── Moon.js
-│   │   │   ├── SpaceSimulation.js
-│   │   │   └── TimeManager.js
-│   │   ├── constants.js
-│   │   ├── main.js
-│   │   └── utils.js
+│   │   ├── main.js                  # Entry point (Vue app)
+│   │   ├── App.vue                  # Vue root component
+│   │   ├── components/
+│   │   │   └── InfoPanel.vue        # Vue UI component
+│   │   └── space-engine/
+│   │       ├── core/
+│   │       │   ├── SpaceSimulation.js  # Main orchestrator
+│   │       │   ├── TimeManager.js      # Simulation time & calendar
+│   │       │   └── InteractionManager.js # Raycasting & clicks
+│   │       ├── objects/
+│   │       │   ├── SpaceObject.js  # Base class for celestial bodies
+│   │       │   ├── Star.js         # Star entity
+│   │       │   ├── Planet.js       # Planet entity (with rings)
+│   │       │   └── Moon.js         # Moon entity
+│   │       ├── constants/
+│   │       │   ├── constants.js        # Colors, camera, controls
+│   │       │   └── space-objects-data.js # SPACE_OBJECTS data
+│   │       └── utils/
+│   │           └── texture-generators.js # Procedural textures
 │   ├── js-procedural/               # Procedural version
 │   │   ├── cosmo/
 │   │   │   ├── effects.js
@@ -182,20 +189,27 @@ two-faced-world-cosmology/
   - [x] Two entry points in webpack: `./src/js/main.js` (OOP) and `./src/js-procedural/main.js` (Procedural)
   - [x] Two sections in nginx server config for serving different URLs
 - [ ] **New Classes & Utilities:**
-  - [x] `SpaceSimulation` — main orchestrator. Creates scene, renderer, camera, starts animation loop. Properties: `scene`, `camera`, `renderer`, `timeManager`, `uiManager`, `celestialObjects` (array of instances).
-  - [x] `TimeManager` — encapsulates `simTime`, `isPlaying`, `speedMultiplier`. Provides orchestrator with a clean interface for getting current time.
-  - [x] CalendarSystem (Merged into TimeManager)
-  - [ ] `InputHandler`: Manages DOM events, Raycasting logic, and Screen-to-World coordinate conversion. Decouples interaction from rendering.
+  - [x] `SpaceSimulation` — main orchestrator. Creates scene, renderer, camera, starts animation loop. Properties: `scene`, `camera`, `renderer`, `timeManager`, `spaceObjects` (array).
+  - [x] `TimeManager` — encapsulates `simTime`, `isPlaying`, `speedMultiplier`, calendar system. Provides orchestrator with a clean interface for getting current time.
+  - [x] `InteractionManager` — handles raycasting, click events, delegates to `SpaceObject.onClick()`.
+  - [x] `SpaceObject` — base class for celestial bodies. Encapsulates mesh creation, orbit calculation, glow effect.
+  - [x] `Star`, `Planet`, `Moon` — inherit from `SpaceObject`. `Planet` adds ring rendering.
   - [ ] `CameraController`: Handles smooth camera transitions (lerping) between zoom levels (Overview -> Saturn -> Moon).
   - [ ] `CalendarSystem`: Decouples fantasy date calculation from simulation time (`simTime`). Provides formatted dates for UI.
-- [ ] **Iterative OOP Implementation (Step-by-Step):**
+  - [ ] **Iterative OOP Implementation (Step-by-Step):**
   - [x] **Step 1:** Implement CalendarSystem. (Note: Time and Calendar logic is fully implemented inside TimeManager.js)
-  - [x] **Step 2:** Create base class `CelestialBody`. Migrate *one* static object (e.g., a placeholder planet) to this class. Verify mesh creation and basic state management.
+  - [x] **Step 2:** Create base class `SpaceObject`. Migrate *one* static object (e.g., a placeholder planet) to this class. Verify mesh creation and basic state management.
   - [x] **Step 3:** Implement `Star` class. Migrate the two suns. Verify orbital motion using parametric equations: `angle = (simTime * 2π) / orbitalPeriod`.
   - [x] **Step 4:** Implement `Planet` and `Moon` classes. Migrate Saturn and its moons. Verify ring rendering and moon orbits.
-  - [ ] **Step 5:** Implement `InputHandler` integration. Connect raycasting to the new entity structure for selection logic.
-  - [ ] **Step 6:** Implement `CameraController`. Add smooth zoom/pan transitions when selecting objects.
-  - [ ] **Step 7:** Finalize `SpaceSimulation` orchestrator. Ensure all systems work together.
+  - [x] **Step 4.5:** Implement `InteractionManager`. Connect raycasting to the new entity structure for selection logic.
+  - [ ] **Step 5:** Implement `CameraController`. Add smooth zoom/pan transitions when selecting objects.
+  - [ ] **Step 6:** Finalize `SpaceSimulation` orchestrator. Ensure all systems work together.
+
+### Stage 7.5: Integration with Vue.js
+- [x] Vue 3 (`<script setup>`) integration
+- [x] `App.vue` — mounts `SpaceSimulation`, listens for `space-object-selected` events
+- [x] `InfoPanel.vue` — UI component (placeholder)
+- [ ] `InfoPanel.vue` — full implementation with selected object data display
 
 ### Stage 8: Features
 - [ ] Textures
