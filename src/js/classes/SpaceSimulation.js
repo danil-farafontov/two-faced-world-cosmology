@@ -2,9 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { COLORS, SUNS_ORBITAL_PERIOD, SPACE_OBJECTS, CAMERA_CONFIG, CONTROLS_CONFIG } from '../constants.js';
 import { TimeManager } from './TimeManager.js';
-import Star from './Star.js';
-import Planet from './Planet.js';
-import Moon from './Moon.js';
+import Star from './entities/Star.js';
+import Planet from './entities/Planet.js';
+import Moon from './entities/Moon.js';
 
 class SpaceSimulation {
   constructor(container) {

@@ -32,11 +32,12 @@ two-faced-world-cosmology/
 ├── src/
 │   ├── js/                          # OOP version (main)
 │   │   ├── classes/
+│   │   │   ├── entities/
+│   │   │   │   ├── CelestialBody.js
+│   │   │   │   ├── Star.js
+│   │   │   │   ├── Planet.js
+│   │   │   │   └── Moon.js
 │   │   │   ├── SpaceSimulation.js
-│   │   │   ├── CelestialBody.js
-│   │   │   ├── Star.js
-│   │   │   ├── Planet.js
-│   │   │   ├── Moon.js
 │   │   │   └── TimeManager.js
 │   │   ├── constants.js
 │   │   ├── main.js
