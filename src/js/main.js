@@ -1,5 +1,5 @@
 import SpaceSimulation from './classes/SpaceSimulation.js';
-import '../css/base.css';
+import '../scss/main.scss';
 
 // HMR guard
 if (!window.__tfwInitialized) {

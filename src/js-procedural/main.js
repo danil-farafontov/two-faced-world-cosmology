@@ -36,10 +36,10 @@ import {
   startCameraAnimation,
   updateCameraAnimation
 } from './utils.js';
-import '../css/base.css';
-import '../css/timeline.css';
-import '../css/info-panel.css';
-import '../css/legend.css';
+import '../css-procedural/base.css';
+import '../css-procedural/timeline.css';
+import '../css-procedural/info-panel.css';
+import '../css-procedural/legend.css';
 
 // Simulation state
 let simTime = 0;

@@ -26,34 +26,40 @@ two-faced-world-cosmology/
 ├── PLAN.md
 ├── README.md
 ├── public/
-│   └── index.html
+│   ├── index.html
+│   ├── index-oop.html
+│   └── index-procedural.html
 ├── src/
-│   ├── js/
-│   │   ├── managers/
-│   │   │   ├── TimeManager.js
-│   │   │   ├── CalendarSystem.js
-│   │   │   ├── CameraController.js
-│   │   │   └── InputHandler.js
-│   │   └── entities/
-│   │       ├── CelestialBody.js
-│   │       ├── Star.js
-│   │       ├── Planet.js
-│   │       └── Moon.js
-│   ├── js-legacy/               # Legacy procedural implementation (for comparison/migration)
+│   ├── js/                          # OOP version (main)
+│   │   ├── classes/
+│   │   │   ├── SpaceSimulation.js
+│   │   │   ├── CelestialBody.js
+│   │   │   ├── Star.js
+│   │   │   ├── Planet.js
+│   │   │   ├── Moon.js
+│   │   │   └── TimeManager.js
+│   │   ├── constants.js
+│   │   ├── main.js
+│   │   └── utils.js
+│   ├── js-procedural/               # Procedural version
 │   │   ├── cosmo/
 │   │   │   ├── effects.js
+│   │   │   ├── firmament.js
 │   │   │   ├── moons.js
 │   │   │   ├── objects.js
 │   │   │   └── saturn.js
 │   │   ├── constants.js
-│   │   ├── main.js              # Original entry point
+│   │   ├── main.js
 │   │   └── utils.js
-│   └── css/
-│       ├── base.css
-│       ├── timeline.css
-│       ├── info-panel.css
-│       ├── legend.css
-│       └── style.css
+│   ├── scss/                        # OOP styles (SCSS)
+│   │   ├── base.scss
+│   │   └── main.scss
+│   ├── css-procedural/              # Procedural styles (plain CSS)
+│   │   ├── base.css
+│   │   ├── timeline.css
+│   │   ├── info-panel.css
+│   │   └── legend.css
+│   └── assets/
 └── ssl/
     ├── server.crt
     └── server.key
@@ -170,9 +176,9 @@ two-faced-world-cosmology/
 
 ### Stage 7: Transition to OOP (Refined)
 - [x] **Architecture for parallel transition:**
-  - [x] Current imperative version is moved to `src/js-legacy/` and served by nginx at `/legacy/`
+  - [x] Procedural version is at `src/js-procedural/` and served by nginx at `/procedural/`
   - [x] OOP version becomes primary and is served at `/`
-  - [x] Two entry points in webpack: `./src/js/main-oop.js` (OOP) and `./src/js-legacy/main.js` (legacy)
+  - [x] Two entry points in webpack: `./src/js/main.js` (OOP) and `./src/js-procedural/main.js` (Procedural)
   - [x] Two sections in nginx server config for serving different URLs
 - [ ] **New Classes & Utilities:**
   - [x] `SpaceSimulation` — main orchestrator. Creates scene, renderer, camera, starts animation loop. Properties: `scene`, `camera`, `renderer`, `timeManager`, `uiManager`, `celestialObjects` (array of instances).
@@ -225,7 +231,7 @@ two-faced-world-cosmology/
 
 ### Webpack
 
-**Purpose:** modular project build, JS/CSS bundling, asset processing.
+**Purpose:** modular project build, JS/CSS/SCSS bundling, asset processing.
 
 **Structure:**
 - `webpack.config.js` — build configuration
@@ -233,17 +239,19 @@ two-faced-world-cosmology/
 - `dist/` — build output (deployment-ready files)
 
 **Configuration:**
-- **entry** — `src/main.js` (primary entry point for OOP version) and `src/js-legacy/main.js` (legacy fallback)
-- **output** — `dist/bundle.js` (and potentially separate bundles if needed, but typically one main bundle is sufficient if legacy is just a different entry)
+- **entry** — two entry points: `oop` → `src/js/main.js` (OOP), `procedural` → `src/js-procedural/main.js` (Procedural)
+- **output** — `dist/oop/` and `dist/procedural/` with separate bundles and CSS per version
 - **modules:**
   - `babel-loader` — JS transpilation (ES6+ → compatible JS)
-  - `css-loader` + `style-loader` — CSS module processing
-  - `file-loader` / `asset/resource` — image and font processing
+  - `css-loader` + `MiniCssExtractPlugin` — CSS module processing
+  - `sass-loader` + `css-loader` + `MiniCssExtractPlugin` — SCSS processing (OOP version)
+  - `asset/resource` — image and font processing
 - **plugins:**
-  - `HtmlWebpackPlugin` — generate `index.html` from template
-  - `MiniCssExtractPlugin` — extract CSS into separate file
+  - `HtmlWebpackPlugin` — generate `oop/index.html` and `procedural/index.html` from templates
+  - `MiniCssExtractPlugin` — extract CSS into separate files per version
   - `CleanWebpackPlugin` — clean `dist/` before each build
-- **devServer** — hot reload (HMR) during development
+- **devServer** — serves from `dist/`, `historyApiFallback` rewrites `/` → `/oop/`, HMR
+- **aliases**: `@js` → `src/js`, `@scss` → `src/scss`, `@css` → `src/css-procedural`, `@assets` → `src/assets`
 - **mode** — `development` / `production` (with minification and tree-shaking)
 
 **npm scripts:**
@@ -257,22 +265,11 @@ two-faced-world-cosmology/
 
 1. **app (development)**
    - **Image:** `node:20-alpine`
-   - **Purpose:** development environment with webpack
-   - **Volume:** `./src → /app/src` (hot loading of sources)
-   - **Ports:** `8080:8080` (webpack-dev-server)
-   - **Volumes:** npm cache in volume for speed
+   - **Purpose:** development environment with webpack-dev-server
+   - **Volume:** `./ → /app` (hot loading of sources)
+   - **Ports:** `443:443` (webpack-dev-server, HTTPS)
    - **Command:** `npm run dev`
-
-2. **nginx (production)**
-   - **Image:** `nginx:alpine`
-   - **Purpose:** serving static files
-   - **Volume:** `./dist → /usr/share/nginx/html` (built files)
-   - **Ports:** `80:80` (HTTP), `443:443` (HTTPS, if SSL is available)
-   - **Config:** `nginx.conf` — gzip compression, caching, CORS headers
-
-3. **node_modules (optional)**
-   - **Volume:** `npm-cache` and `node_modules` in named volumes
-   - **Purpose:** avoiding repeated dependency installation, isolation from host
+   - **Note:** `nginx` service removed from dev workflow. Only `app` is used during development.
 
 **docker-compose.yml:**
 ```yaml
@@ -286,26 +283,13 @@ services:
     container_name: tfwcosmo-dev
     working_dir: /app
     volumes:
-      - ./src:/app/src
+      - .:/app
       - /app/node_modules
     ports:
-      - "8080:8080"
+      - "443:443"
     command: npm run dev
     environment:
       - NODE_ENV=development
-
-  nginx:
-    image: nginx:alpine
-    container_name: tfwcosmo-prod
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./dist:/usr/share/nginx/html:ro
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - app
-    restart: unless-stopped
 ```
 
 **Dockerfile (app):**
@@ -318,6 +302,13 @@ COPY . .
 EXPOSE 8080
 CMD ["npm", "run", "dev"]
 ```
+
+**Nginx (production only):**
+- **Image:** `nginx:alpine`
+- **Purpose:** serving static files from `dist/`
+- **Volume:** `./dist → /usr/share/nginx/html:ro`
+- **Config:** `nginx.conf` — `/` → `dist/oop/`, `/procedural/` → `dist/procedural/`
+- **Note:** `nginx` service is not used during development. Only for production builds.
 
 ## Visual Style (Fantasy)
 

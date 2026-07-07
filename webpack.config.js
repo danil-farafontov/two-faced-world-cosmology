@@ -7,7 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   entry: {
     oop: './src/js/main.js',
-    legacy: './src/js-legacy/main.js',
+    procedural: './src/js-procedural/main.js',
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -29,6 +29,21 @@ module.exports = {
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'sass-loader',
+            options: {
+              sassOptions: {
+                includePaths: ['src/scss'],
+              },
+            },
+          },
+        ],
+      },
+      {
         test: /\.(png|jpg|gif|svg|webp)$/,
         type: 'asset/resource',
       },
@@ -41,16 +56,16 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: './public/index.html',
-      filename: 'index.html',
+      template: './public/index-oop.html',
+      filename: 'oop/index.html',
       title: 'Миры Двуликого (ООП)',
       chunks: ['oop'],
     }),
     new HtmlWebpackPlugin({
-      template: './public/legacy.html',
-      filename: 'legacy/index.html',
-      title: 'Миры Двуликого (Legacy)',
-      chunks: ['legacy'],
+      template: './public/index-procedural.html',
+      filename: 'procedural/index.html',
+      title: 'Миры Двуликого (Procedural)',
+      chunks: ['procedural'],
     }),
     new MiniCssExtractPlugin({
       filename: '[name]/style.[contenthash].css',
@@ -58,8 +73,14 @@ module.exports = {
   ],
   devServer: {
     static: {
-      directory: path.join(__dirname, 'public'),
+        directory: path.join(__dirname, 'dist'),
     },
+    historyApiFallback: {
+        rewrites: [{ from: /^\/$/, to: '/oop/' }]
+    },
+    /*static: {
+      directory: path.join(__dirname, 'public'),
+    },*/
     host: '0.0.0.0',
     port: 443,
     hot: true,
@@ -74,7 +95,8 @@ module.exports = {
   resolve: {
     alias: {
       '@js': path.resolve(__dirname, 'src/js'),
-      '@css': path.resolve(__dirname, 'src/css'),
+      '@scss': path.resolve(__dirname, 'src/scss'),
+      '@css': path.resolve(__dirname, 'src/css-procedural'),
       '@assets': path.resolve(__dirname, 'src/assets'),
     },
   },
