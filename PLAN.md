@@ -213,7 +213,7 @@ two-faced-world-cosmology/
 - [ ] `TimeControls.vue` - controls for speed multiplier, play/pause
 
 #### Stage 7.2: Refactoring. Replacing Inheritance with Composition
-- [ ] Create space-engine/factories/OrbitFactory.js. Move SpaceObject.createOrbitLine() to OrbitFactory.
+- [x] Create space-engine/factories/OrbitFactory.js. Move SpaceObject.createOrbitLine() to OrbitFactory.
 - [x] Create space-engine/effects/GlowEffect.js. Move SpaceObject.createGlowMesh() to GlowEffect.js.
 - [x] Create space-engine/effects/RingsEffect.js. Move Planet.createRingsMeshes() to RingsEffect.js.
 - [ ] Create space-engine/effects/FirmamentConeEffect.js. Implement it. Add it to the moons.
