@@ -214,8 +214,8 @@ two-faced-world-cosmology/
 
 #### Stage 7.2: Refactoring. Replacing Inheritance with Composition
 - [ ] Create space-engine/factories/OrbitFactory.js. Move SpaceObject.createOrbitLine() to OrbitFactory.
-- [x] Create space-engine/effects/GlowEffect.js. Move SpaceObject.createGlowMesh() to GloeEffect.js.
-- [ ] Create space-engine/effects/RingsEffect.js. Move Planet.createGlowMesh() to GloeEffect.js.
+- [x] Create space-engine/effects/GlowEffect.js. Move SpaceObject.createGlowMesh() to GlowEffect.js.
+- [ ] Create space-engine/effects/RingsEffect.js. Move Planet.createRingsMeshes() to RingsEffect.js.
 - [ ] Create space-engine/effects/FirmamentConeEffect.js. Implement it. Add it to the moons.
 
 ### Stage 8: Features
