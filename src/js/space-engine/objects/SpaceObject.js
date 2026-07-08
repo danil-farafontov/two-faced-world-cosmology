@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import GlowEffect from '../effects/GlowEffect';
+import RingsEffect from '../effects/RingsEffect';
 
 class SpaceObject {
   constructor(data, parentObject = null) {
@@ -28,6 +29,8 @@ class SpaceObject {
     this.glowEnabled = data.glowEnabled ?? false;
     this.glowColor = data.glowColor ?? data.color;
     this.glowScale = data.glowScale ?? 1.3;
+
+    this.rings = data.rings ?? [];
 
     this.startAngle = data.startAngle ?? 0;
   }
@@ -104,6 +107,12 @@ class SpaceObject {
       let glowEffect = new GlowEffect(this.radius, this.glowScale, this.glowColor);
       glowEffect.build();
       this.addEffect(glowEffect);
+    }
+
+    if (this.rings.length > 0) {
+      let ringsEffect = new RingsEffect(this.rings);
+      ringsEffect.build();
+      this.addEffect(ringsEffect);
     }
   }
 
