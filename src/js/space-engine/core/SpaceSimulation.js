@@ -4,6 +4,7 @@ import { COLORS, CAMERA_CONFIG, CONTROLS_CONFIG } from '../constants/constants.j
 import { SPACE_OBJECTS } from '../constants/space-objects-data.js';
 import { TimeManager } from './TimeManager.js';
 import { InteractionManager } from './InteractionManager.js';
+import OrbitFactory from '../factories/OrbitFactory';
 import Star from '../objects/Star.js';
 import Planet from '../objects/Planet.js';
 import Moon from '../objects/Moon.js';
@@ -115,19 +116,24 @@ class SpaceSimulation {
           for (const moonData of spaceObjectData.moons) {
             let moonObject = new Moon(moonData, spaceObject);
             moonObject.build();
-            moonObject.createOrbitLine(); //TODO: refactoring - use static OrbitFactory
             this.scene.add(moonObject.container);
-            this.scene.add(moonObject.orbitMesh); //TODO: refactoring - use static OrbitFactory
             this.spaceObjects.push(moonObject);
           }
         }
       }
       if (spaceObject != null) {
         spaceObject.build();
-        spaceObject.createOrbitLine(); //TODO: refactoring - use static OrbitFactory
         this.scene.add(spaceObject.container);
-        this.scene.add(spaceObject.orbitMesh); //TODO: refactoring - use static OrbitFactory
         this.spaceObjects.push(spaceObject);
+      }
+    }
+
+    // Create orbits after all objects are built
+    for (const spaceObject of this.spaceObjects) {
+      const orbitMesh = OrbitFactory.create(spaceObject.orbitRadius, spaceObject.color);
+      if (orbitMesh) {
+        spaceObject._setOrbitMesh(orbitMesh);
+        this.scene.add(orbitMesh);
       }
     }
   }

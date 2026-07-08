@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import GlowEffect from '../effects/GlowEffect';
 import RingsEffect from '../effects/RingsEffect';
+import { RENDER_ORDER } from '../constants/constants.js';
 
 class SpaceObject {
   constructor(data, parentObject = null) {
@@ -24,7 +25,7 @@ class SpaceObject {
     this.position = new THREE.Vector3(0, 0, 0);
 
     this.orbitMesh = null;
-    this.showOrbit = data.showOrbit ?? true; // Flag for toggling visibility via UI
+    this.showOrbit = data.showOrbit ?? true;
 
     this.glowEnabled = data.glowEnabled ?? false;
     this.glowColor = data.glowColor ?? data.color;
@@ -84,11 +85,11 @@ class SpaceObject {
 
     this.mesh = new THREE.Mesh(geometry, material);
     if (this.type.includes('Star')) {
-      this.mesh.renderOrder = 3; // Stars on top
+      this.mesh.renderOrder = RENDER_ORDER.STAR;
     } else if (this.type.includes('Planet')) {
-      this.mesh.renderOrder = 2; // Planets in the middle
+      this.mesh.renderOrder = RENDER_ORDER.PLANET;
     } else if (this.type.includes('Moon')) {
-      this.mesh.renderOrder = 4; // Moons on top of planets
+      this.mesh.renderOrder = RENDER_ORDER.MOON;
     }
 
     const startX = Math.cos(this.startAngle) * this.orbitRadius;
@@ -116,31 +117,8 @@ class SpaceObject {
     }
   }
 
-  createOrbitLine() {
-    if (this.orbitRadius <= 0) return;
-
-    const points = [];
-    for (let i = 0; i < 64; i++) {
-      const angle = (i / 64) * Math.PI * 2;
-      const x = this.orbitRadius * Math.cos(angle);
-      const y = this.orbitRadius * Math.sin(angle);
-      points.push(new THREE.Vector3(x, y, 0));
-    }
-
-    const geometry = new THREE.BufferGeometry().setFromPoints(points);
-    const material = new THREE.LineBasicMaterial({ color: this.color });
-    material.side = THREE.DoubleSide;
-
-    this.orbitMesh = new THREE.LineLoop(geometry, material);
-    this.orbitMesh.position.set(0, 0, 0);
-
-    if (this.parentObject) {
-      this.orbitMesh.position.x += this.parentObject.position.x;
-      this.orbitMesh.position.y += this.parentObject.position.y;
-    }
-
-    // Set orbit mesh to render at the very bottom layer
-    this.orbitMesh.renderOrder = 1; // Orbits always underneath everything
+  _setOrbitMesh(orbitMesh) {
+    this.orbitMesh = orbitMesh;
   }
 
   update(simTime) {

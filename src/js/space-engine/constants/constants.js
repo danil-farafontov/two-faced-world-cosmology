@@ -22,3 +22,11 @@ export const CONTROLS_CONFIG = {
   minZoom: 0.1,
   maxZoom: 10,
 };
+
+// Render order
+export const RENDER_ORDER = {
+  ORBIT: 1,
+  PLANET: 2,
+  STAR: 3,
+  MOON: 4,
+};
