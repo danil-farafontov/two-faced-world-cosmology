@@ -205,12 +205,18 @@ two-faced-world-cosmology/
   - [ ] **Step 5:** Implement `CameraController`. Add smooth zoom/pan transitions when selecting objects.
   - [ ] **Step 6:** Finalize `SpaceSimulation` orchestrator. Ensure all systems work together.
 
-### Stage 7.5: Integration with Vue.js
+#### Stage 7.1: Integration with Vue.js
 - [x] Vue 3 (`<script setup>`) integration
 - [x] `App.vue` — mounts `SpaceSimulation`, listens for `space-object-selected` events
 - [x] `InfoPanel.vue` — UI component (placeholder)
 - [ ] `InfoPanel.vue` — full implementation with selected object data display
 - [ ] `TimeControls.vue` - controls for speed multiplier, play/pause
+
+#### Stage 7.2: Refactoring. Replacing Inheritance with Composition
+- [ ] Create space-engine/factories/OrbitFactory.js. Move SpaceObject.createOrbitLine() to OrbitFactory.
+- [ ] Create space-engine/effects/GlowEffect.js. Move SpaceObject.createGlowMesh() to GloeEffect.js.
+- [ ] Create space-engine/effects/RingsEffect.js. Move Planet.createGlowMesh() to GloeEffect.js.
+- [ ] Create space-engine/effects/FirmamentConeEffect.js. Implement it. Add it to the moons.
 
 ### Stage 8: Features
 - [ ] Textures
