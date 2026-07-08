@@ -114,19 +114,19 @@ class SpaceSimulation {
         ) {
           for (const moonData of spaceObjectData.moons) {
             let moonObject = new Moon(moonData, spaceObject);
-            moonObject.createMesh();
-            moonObject.createOrbitLine();
-            this.scene.add(moonObject.mesh);
-            this.scene.add(moonObject.orbitMesh);
+            moonObject.build();
+            moonObject.createOrbitLine(); //TODO: refactoring - use static OrbitFactory
+            this.scene.add(moonObject.container);
+            this.scene.add(moonObject.orbitMesh); //TODO: refactoring - use static OrbitFactory
             this.spaceObjects.push(moonObject);
           }
         }
       }
       if (spaceObject != null) {
-        spaceObject.createMesh();
-        spaceObject.createOrbitLine();
-        this.scene.add(spaceObject.mesh);
-        this.scene.add(spaceObject.orbitMesh);
+        spaceObject.build();
+        spaceObject.createOrbitLine(); //TODO: refactoring - use static OrbitFactory
+        this.scene.add(spaceObject.container);
+        this.scene.add(spaceObject.orbitMesh); //TODO: refactoring - use static OrbitFactory
         this.spaceObjects.push(spaceObject);
       }
     }

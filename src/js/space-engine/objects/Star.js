@@ -5,8 +5,8 @@ class Star extends SpaceObject {
     super(data, parentObject);
   }
 
-  createMesh() {
-    super.createMesh();
+  build() {
+    super.build();
   }
 }
 

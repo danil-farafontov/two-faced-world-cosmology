@@ -8,8 +8,8 @@ class Planet extends SpaceObject {
     this.ringsMeshes = [];
   }
 
-  createMesh() {
-    super.createMesh();
+  build() {
+    super.build();
     if (this.rings.length > 0) {
       this.createRingsMeshes();
     }

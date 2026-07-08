@@ -1,10 +1,13 @@
 import * as THREE from 'three';
+import GlowEffect from '../effects/GlowEffect';
 
 class SpaceObject {
   constructor(data, parentObject = null) {
+    this.container = new THREE.Group();
+    this.effects = [];
+
     this.name = data.name;
     this.type = data.type;
-
 
     this.color = data.color;
     this.textureGeneratorFunc = typeof data.textureGeneratorFunc === 'function' ? data.textureGeneratorFunc : null;
@@ -25,7 +28,6 @@ class SpaceObject {
     this.glowEnabled = data.glowEnabled ?? false;
     this.glowColor = data.glowColor ?? data.color;
     this.glowScale = data.glowScale ?? 1.3;
-    this.glowMesh = null;
 
     this.startAngle = data.startAngle ?? 0;
   }
@@ -37,6 +39,11 @@ class SpaceObject {
     window.dispatchEvent(new CustomEvent('space-object-selected', {
       detail: { name: this.name, type: this.type }
     }));
+  }
+
+  addEffect(effect) {
+    this.effects.push(effect);
+    effect.attachTo(this.container);
   }
 
   #createTextureFromFunction() {
@@ -53,7 +60,7 @@ class SpaceObject {
       return texture;
   }
 
-  createMesh() {
+  build() {
     const geometry = new THREE.CircleGeometry(this.radius, 48);
     let material;
     if (this.textureGeneratorFunc == null) {
@@ -90,50 +97,14 @@ class SpaceObject {
       this.position.x += this.parentObject.position.x;
       this.position.y += this.parentObject.position.y;
     }
-    this.mesh.position.copy(this.position);
+    this.container.position.copy(this.position);
+    this.container.add(this.mesh);
+
     if (this.glowEnabled) {
-      this.createGlowMesh();
+      let glowEffect = new GlowEffect(this.radius, this.glowScale, this.glowColor);
+      glowEffect.build();
+      this.addEffect(glowEffect);
     }
-  }
-
-  createGlowMesh() {
-    const glowRadius = this.radius * this.glowScale * 2;
-    const geometry = new THREE.RingGeometry(this.radius, glowRadius, 32);
-    const material = new THREE.ShaderMaterial({
-      uniforms: {
-        glowColor: { value: new THREE.Color(this.glowColor) },
-      },
-      vertexShader: `
-        varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
-      fragmentShader: `
-        uniform vec3 glowColor;
-        varying vec2 vUv;
-        void main() {
-          // Вычисляем расстояние от центра квадрата (0.5, 0.5)
-          float dist = length(vUv - vec2(0.5));
-
-          // Если вышли за пределы радиуса круга (0.5), отсекаем пиксели
-          if (dist > 0.5) discard;
-
-          // Инвертируем и сглаживаем: в центре (dist=0) alpha = 1.0, на краю (dist=0.5) alpha = 0.0
-          // Мягкое затухание от центра к краям
-          float alpha = smoothstep(0.5, 0.0, dist);
-
-          // Для эффекта интенсивности можно возвести в степень (например, pow(alpha, 2.0))
-          gl_FragColor = vec4(glowColor, alpha);
-        }
-      `,
-      transparent: true,
-      blending: THREE.AdditiveBlending
-    });
-
-    this.glowMesh = new THREE.Mesh(geometry, material);
-    this.mesh.add(this.glowMesh);
   }
 
   createOrbitLine() {
@@ -176,7 +147,7 @@ class SpaceObject {
         this.position.x += this.parentObject.position.x;
         this.position.y += this.parentObject.position.y;
       }
-      this.mesh.position.copy(this.position);
+      this.container.position.copy(this.position);
 
       if (this.orbitMesh) {
         this.orbitMesh.position.x = this.parentObject ? this.parentObject.position.x : 0;
