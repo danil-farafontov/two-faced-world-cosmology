@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import InfoPanel from './components/InfoPanel.vue';
 import SpaceSimulation from './space-engine/core/SpaceSimulation.js';
 
 const simulationInstance = ref(null);
@@ -42,8 +43,8 @@ onUnmounted(() => {
 
     <div class="ui-container">
       <!-- UI -->
-      <div v-if="selectedObject" class="ui-panel">
-        <h3>{{ selectedObject.name }}</h3>
+      <div id="info-panel" v-if="selectedObject" class="ui-panel">
+        <InfoPanel :selected-object="selectedObject" />
       </div>
     </div>
   </div>
@@ -51,4 +52,10 @@ onUnmounted(() => {
 
 <style scoped>
 /* Css styles */
+#info-panel {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+}
 </style>
