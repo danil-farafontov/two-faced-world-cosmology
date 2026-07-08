@@ -38,7 +38,11 @@ export class InteractionManager {
 
       if (clickedObject) {
         clickedObject.onClick(); // call object's onClick
+      } else {
+         window.dispatchEvent(new CustomEvent('space-object-unselected'));
       }
+    } else {
+       window.dispatchEvent(new CustomEvent('space-object-unselected'));
     }
   }
 }

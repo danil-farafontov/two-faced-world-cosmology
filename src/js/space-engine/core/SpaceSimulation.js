@@ -5,9 +5,10 @@ import { SPACE_OBJECTS } from '../constants/space-objects-data.js';
 import { TimeManager } from './TimeManager.js';
 import { InteractionManager } from './InteractionManager.js';
 import OrbitFactory from '../factories/OrbitFactory';
-import Star from '../objects/Star.js';
-import Planet from '../objects/Planet.js';
-import Moon from '../objects/Moon.js';
+import Star from '../objects/Star';
+import Planet from '../objects/Planet';
+import Moon from '../objects/Moon';
+import CameraManager from './CameraManager';
 
 class SpaceSimulation {
   constructor(container) {
@@ -18,6 +19,7 @@ class SpaceSimulation {
     this.scene.add(this.camera);
     this.renderer = this._createRenderer(container);
     this.controls = this._createControls();
+    this.cameraManager = new CameraManager(this.camera, this.controls);
 
     this.timeManager = new TimeManager();
     this.starField = null;
@@ -146,8 +148,7 @@ class SpaceSimulation {
     for (const entity of this.spaceObjects) {
       entity.update(this.timeManager.simTime);
     }
-
-    this.controls.update();
+    this.cameraManager.update();
 
     // Prevent star field from zooming
     if (this.starField) {
@@ -155,6 +156,7 @@ class SpaceSimulation {
         const inverseZoom = 1 / this.camera.zoom;
         this.starField.scale.set(inverseZoom, inverseZoom, 1);
     }
+
 
     this.renderer.render(this.scene, this.camera);
   }

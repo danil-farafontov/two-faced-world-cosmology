@@ -6,6 +6,7 @@ import { RENDER_ORDER } from '../constants/constants.js';
 class SpaceObject {
   constructor(data, parentObject = null) {
     this.container = new THREE.Group();
+
     this.effects = [];
 
     this.name = data.name;
@@ -41,7 +42,7 @@ class SpaceObject {
 
     // Send global event
     window.dispatchEvent(new CustomEvent('space-object-selected', {
-      detail: { name: this.name, type: this.type }
+      detail: { objectInstance: this }
     }));
   }
 

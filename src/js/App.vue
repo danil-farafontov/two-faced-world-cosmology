@@ -13,8 +13,13 @@ const handleResize = () => {
 };
 
 const handleObjectSelect = (event) => {
-  selectedObject.value = event.detail;
+  selectedObject.value = event.detail.objectInstance;
   console.log("catched click on space object: ");
+  console.log(event);
+};
+const handleObjectUnselected = (event) => {
+  selectedObject.value = null;
+  console.log("catched click on empy space - object unselected");
   console.log(event);
 };
 
@@ -29,11 +34,13 @@ onMounted(() => {
   window.addEventListener('resize', handleResize);
   // Catch click on space object events
   window.addEventListener('space-object-selected', handleObjectSelect);
+  window.addEventListener('space-object-unselected', handleObjectUnselected);
 });
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
   window.removeEventListener('space-object-selected', handleObjectSelect);
+  window.removeEventListener('space-object-unselected', handleObjectUnselected);
 });
 </script>
 
