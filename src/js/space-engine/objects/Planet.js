@@ -16,15 +16,15 @@ class Planet extends SpaceObject {
   }
 
   createRingsMeshes() {
-    for (const ringData of this.rings) {
+    for (let ringData of this.rings) {
       const innerRadius = ringData.innerRadius;
       const outerRadius = ringData.outerRadius;
-      const ringColor = ringData.color;
+      const ringColor = new THREE.Color(ringData.color);
       // opacity - the ring opacity will be from opacity to 1.0.
       // 1.0 on the edges and opacity value in the center of a ring.
       const opacity = ringData.opacity;
 
-      const geometry = new THREE.RingGeometry(innerRadius, outerRadius, 32);
+      const geometry = new THREE.RingGeometry(innerRadius, outerRadius, 64);
       const material = new THREE.ShaderMaterial({
         uniforms: {
           ringColor: { value: new THREE.Color(ringColor) },
@@ -45,7 +45,10 @@ class Planet extends SpaceObject {
           uniform float outerRadius;
           uniform float ringOpacity;
           varying vec2 vUv;
+
           void main() {
+            float xCoord = vUv.x;
+            float yCoord = vUv.y;
             // Calculate distance from square center (0.5, 0.5)
             float dist = length(vUv - vec2(0.5));
 
@@ -66,24 +69,39 @@ class Planet extends SpaceObject {
             } else {
               alpha = smoothstep(middleRadius, minDist, dist);
             }
-            alpha = ringOpacity + (alpha / (1.0 / (1.0 - ringOpacity)));
 
+            // alpha: min=ringOpacity; max=ringOpacity+ 20% of (1.0-ringOpacity);
+            // ringOpacity in the center of the ring; ringOpacity+  on the edges;
+            float maxAvailableOpacity = 1.0 - ringOpacity;
+            alpha = ringOpacity + 0.2 * maxAvailableOpacity * alpha;
+
+            float alphaForGlare = 0.0;
+            if (yCoord > 0.5) {
+              alphaForGlare = smoothstep(0.5, 1.0, yCoord);
+            } else {
+              alphaForGlare = smoothstep(0.5, 0.0, yCoord);
+            }
+            //alphaForGlare = smoothstep(0.0, 1.0, yCoord);
+            alphaForGlare = alphaForGlare * 0.8 * maxAvailableOpacity;
+
+            alpha = alpha - alphaForGlare;
             // Invert and smooth: in the center (dist=0) alpha = 1.0, at the edge (dist=0.5) alpha = 0.0
             // Soft fading from the center to the edges
             //float alpha = smoothstep(0.5, 0.0, dist);
 
             // For intensity effect, you can raise it to a power (e.g. pow(alpha, 2.0))
-            gl_FragColor = vec4(ringColor, alpha);
+            // 1.0 / 2.2 - makes midtones brighter
+            // gamma correction
+            gl_FragColor = vec4(pow(ringColor, vec3(1.0 / 2.2)), alpha);
+
           }
         `,
         transparent: true,
-        blending: THREE.AdditiveBlending
       });
       const ringMesh = new THREE.Mesh(geometry, material);
       this.ringsMeshes.push(ringMesh);
       this.mesh.add(ringMesh);
     }
-
   }
 }
 
