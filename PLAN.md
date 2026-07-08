@@ -210,6 +210,7 @@ two-faced-world-cosmology/
 - [x] `App.vue` — mounts `SpaceSimulation`, listens for `space-object-selected` events
 - [x] `InfoPanel.vue` — UI component (placeholder)
 - [ ] `InfoPanel.vue` — full implementation with selected object data display
+- [ ] `TimeControls.vue` - controls for speed multiplier, play/pause
 
 ### Stage 8: Features
 - [ ] Textures
