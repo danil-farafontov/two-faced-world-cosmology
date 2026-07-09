@@ -4,6 +4,7 @@ import { createGasGiantTexture } from '../utils/texture-generators.js';
 // Sun system configuration
 export const SPACE_OBJECTS = [
   {
+    id: 1,
     name: "Желтое Солнце",
     type: "Star",
     radius: 30,
@@ -14,6 +15,7 @@ export const SPACE_OBJECTS = [
     glowEnabled: true
   },
   {
+    id: 2,
     name: "Красное Солнце",
     type: "Star",
     radius: 30,
@@ -24,6 +26,7 @@ export const SPACE_OBJECTS = [
     glowEnabled: true
   },
   {
+    id: 3,
     name: 'Внутренняя',
     type: "Planet",
     radius: 5,
@@ -33,6 +36,7 @@ export const SPACE_OBJECTS = [
     description: 'Маленькая горячая планета, ближайшая к солнцам. (59 дней)'
   },
   {
+    id: 4,
     name: 'Вторая',
     type: "Planet",
     radius: 8,
@@ -42,6 +46,7 @@ export const SPACE_OBJECTS = [
     description: 'Скалистая планета среднего размера. (225 дней)'
   },
   {
+    id: 5,
     name: 'Сатурн',
     type: "Planet",
     radius: 11,
@@ -50,7 +55,7 @@ export const SPACE_OBJECTS = [
     color: 0xD4A843,
     textureGeneratorFunc: createGasGiantTexture,
     textureGeneratorParams: {baseColor: 0xD4A843},
-    description: 'Газовый гигант с кольцами — центральный объект системы. (22.5 лет)',
+    description: 'Газовый гигант с кольцами — его спутники населенные. (22.5 лет)',
     rings: [
       // opacity - the ring opacity will be from opacity to 1.0. 1.0 on the edges and opacity value in the center of a ring.
       { innerRadius: 16, outerRadius: 19, color: 0xC8A868, opacity: 0.7 },  // Inner
@@ -59,26 +64,29 @@ export const SPACE_OBJECTS = [
     ],
     moons: [
         {
+          id: 6,
           name: 'Мимас',
           type: 'Moon',
           radius: 3,
           orbitalPeriod: 24, // 1.0 Earth days
           orbitRadius: 38,
           color: 0x8B0000,
-          description: 'Мир Императора. Мир с развитой цивилизацией, имперский город-государство.',
+          description: 'Мир Императора. Мир с развитой цивилизацией. Сатуриновый Трон.',
           isInhabited: true
         },
         {
+          id: 7,
           name: 'Энцелад',
           type: 'Moon',
           radius: 3.5,
           orbitalPeriod: 48.0024, // 2.0001 Earth days
           orbitRadius: 47,
           color: 0xF4A460,
-          description: 'Планета разумного существа, огромный океан живой субстанции. Весь мир — один организм.',
+          description: 'Спутник - разумное существо, огромный океан живой субстанции. Весь мир — один организм.',
           isInhabited: true
         },
         {
+          id: 8,
           name: 'Тефия',
           type: 'Moon',
           radius: 3.2,
@@ -89,6 +97,7 @@ export const SPACE_OBJECTS = [
           isInhabited: true
         },
         {
+          id: 9,
           name: 'Диона',
           type: 'Moon',
           radius: 3.8,
@@ -99,6 +108,7 @@ export const SPACE_OBJECTS = [
           isInhabited: true
         },
         {
+          id: 10,
           name: 'Рея',
           type: 'Moon',
           radius: 4,
@@ -109,6 +119,7 @@ export const SPACE_OBJECTS = [
           isInhabited: true
         },
         {
+          id: 11,
           name: 'Титан',
           type: 'Moon',
           radius: 4.5,
@@ -119,6 +130,7 @@ export const SPACE_OBJECTS = [
           isInhabited: true
         },
         {
+          id: 12,
           name: 'Япет',
           type: 'Moon',
           radius: 3.5,
@@ -131,6 +143,7 @@ export const SPACE_OBJECTS = [
     ]
   },
   {
+    id: 13,
     name: 'Четвёртая',
     type: "Planet",
     radius: 14,
@@ -140,6 +153,7 @@ export const SPACE_OBJECTS = [
     description: 'Газовый гигант, поменьше Сатурна. (100 лет)'
   },
   {
+    id: 14,
     name: 'Пятая',
     type: "Planet",
     radius: 12,
@@ -149,6 +163,7 @@ export const SPACE_OBJECTS = [
     description: 'Ледяной гигант. (165 лет)'
   },
   {
+    id: 15,
     name: 'Внешняя',
     type: "Planet",
     radius: 6,
