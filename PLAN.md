@@ -18,13 +18,16 @@ An interactive model of a fictional binary star system, implemented as a **top-d
 
 ```
 two-faced-world-cosmology/
-├── package.json
-├── webpack.config.js
+├── .gitignore
 ├── docker-compose.yml
 ├── Dockerfile
 ├── nginx.conf
+├── package-lock.json
+├── package.json
+├── PLAN_ru.md
 ├── PLAN.md
 ├── README.md
+├── webpack.config.js
 ├── public/
 │   ├── index-oop.html
 │   └── index-procedural.html
@@ -33,12 +36,14 @@ two-faced-world-cosmology/
 │   │   ├── main.js                  # Entry point (Vue app)
 │   │   ├── App.vue                  # Vue root component
 │   │   ├── components/
-│   │   │   └── InfoPanel.vue        # Vue UI component
+│   │   │   ├── InfoPanel.vue        # Vue UI component
+│   │   │   └── TimeControls.vue     # Time controls UI
 │   │   └── space-engine/
 │   │       ├── core/
 │   │       │   ├── SpaceSimulation.js  # Main orchestrator
 │   │       │   ├── TimeManager.js      # Simulation time & calendar
-│   │       │   └── InteractionManager.js # Raycasting & clicks
+│   │       │   ├── InteractionManager.js # Raycasting & clicks
+│   │       │   └── CameraManager.js    # Camera transitions
 │   │       ├── objects/
 │   │       │   ├── SpaceObject.js  # Base class for celestial bodies
 │   │       │   ├── Star.js         # Star entity
@@ -47,6 +52,11 @@ two-faced-world-cosmology/
 │   │       ├── constants/
 │   │       │   ├── constants.js        # Colors, camera, controls
 │   │       │   └── space-objects-data.js # SPACE_OBJECTS data
+│   │       ├── effects/
+│   │       │   ├── GlowEffect.js       # Glow effect system
+│   │       │   └── RingsEffect.js      # Ring rendering system
+│   │       ├── factories/
+│   │       │   └── OrbitFactory.js     # Orbit line factory
 │   │       └── utils/
 │   │           └── texture-generators.js # Procedural textures
 │   ├── js-procedural/               # Procedural version
@@ -61,9 +71,11 @@ two-faced-world-cosmology/
 │   │   └── utils.js
 │   ├── scss/                        # OOP styles (SCSS)
 │   │   ├── base.scss
+│   │   ├── buttons.scss
 │   │   └── main.scss
 │   ├── css-procedural/              # Procedural styles (plain CSS)
 │   │   ├── base.css
+│   │   ├── style.css
 │   │   ├── timeline.css
 │   │   ├── info-panel.css
 │   │   └── legend.css
@@ -195,14 +207,14 @@ two-faced-world-cosmology/
   - [x] `SpaceObject` — base class for celestial bodies. Encapsulates mesh creation, orbit calculation, glow effect.
   - [x] `Star`, `Planet`, `Moon` — inherit from `SpaceObject`. `Planet` adds ring rendering.
   - [x] `CameraController`: Handles smooth camera transitions (lerping) between zoom levels (Overview -> Saturn -> Moon).
-- [ ] **Iterative OOP Implementation (Step-by-Step):**
+- [x] **Iterative OOP Implementation (Step-by-Step):**
   - [x] **Step 1:** Implement CalendarSystem. (Note: Time and Calendar logic is fully implemented inside TimeManager.js)
   - [x] **Step 2:** Create base class `SpaceObject`. Migrate *one* static object (e.g., a placeholder planet) to this class. Verify mesh creation and basic state management.
   - [x] **Step 3:** Implement `Star` class. Migrate the two suns. Verify orbital motion using parametric equations: `angle = (simTime * 2π) / orbitalPeriod`.
   - [x] **Step 4:** Implement `Planet` and `Moon` classes. Migrate Saturn and its moons. Verify ring rendering and moon orbits.
   - [x] **Step 4.5:** Implement `InteractionManager`. Connect raycasting to the new entity structure for selection logic.
   - [x] **Step 5:** Implement `CameraController`. Add smooth zoom/pan transitions when selecting objects.
-  - [ ] **Step 6:** Finalize `SpaceSimulation` orchestrator. Ensure all systems work together.
+  - [x] **Step 6:** Finalize `SpaceSimulation` orchestrator. Ensure all systems work together.
 
 #### Stage 7.1: Integration with Vue.js
 - [x] Vue 3 (`<script setup>`) integration
@@ -217,7 +229,12 @@ two-faced-world-cosmology/
 - [x] Create space-engine/effects/RingsEffect.js. Move Planet.createRingsMeshes() to RingsEffect.js.
 - [ ] Create space-engine/effects/FirmamentConeEffect.js. Implement it. Add it to the moons.
 
-### Stage 7.3: CalendarManager
+### Stage 7.3: Repository.
+- [ ] Create Interface for a Repository.
+- [ ] Create Placeholder for Directus Repository
+- [ ] Implement 'Local' Repository based on current space-objects-data.js
+
+### Stage 7.4: CalendarManager
 - [ ] `CalendarManager`: Decouples fantasy date calculation from simulation time (`simTime`). Provides formatted dates for UI. Somewhat simillar already implemented in TimeManager.
 
 ### Stage 8: Features
