@@ -7,7 +7,9 @@ import { LocalSpaceObjectsRepository } from './space-engine/repositories/LocalSp
 
 const simulationInstance = ref(null);
 const selectedObject = ref(null);
+const isInfoLoading = ref(false);
 const isLoading = ref(true);
+const repository = ref(null);
 
 const handleResize = () => {
   if (simulationInstance.value) {
@@ -15,8 +17,14 @@ const handleResize = () => {
   }
 };
 
-const handleObjectSelect = (event) => {
-  selectedObject.value = event.detail.objectInstance;
+const handleObjectSelect = async (event) => {
+  const objectId = event.detail.objectInstance.id;
+  isInfoLoading.value = true;
+  try {
+    selectedObject.value = await repository.value.getSpaceObjectById(objectId);
+  } finally {
+    isInfoLoading.value = false;
+  }
   console.log("catched click on space object: ");
   console.log(event);
 };
@@ -28,8 +36,8 @@ const handleObjectUnselected = (event) => {
 
 onMounted(async () => {
   try {
-    const repository = new LocalSpaceObjectsRepository();
-    const spaceObjectsData = await repository.getSpaceObjects();
+    repository.value = new LocalSpaceObjectsRepository();
+    const spaceObjectsData = await repository.value.getSpaceObjects();
 
     const container = document.getElementById('canvas-container');
     const simulation = new SpaceSimulation(container, spaceObjectsData);
@@ -60,8 +68,8 @@ onUnmounted(() => {
 
     <div class="ui-container">
       <!-- UI -->
-      <div id="info-panel" v-if="selectedObject" class="ui-panel">
-        <InfoPanel :selected-object="selectedObject" />
+      <div id="info-panel" v-if="selectedObject !== null" class="ui-panel">
+        <InfoPanel :selected-object="selectedObject" :is-loading="isInfoLoading" />
       </div>
     </div>
   </div>

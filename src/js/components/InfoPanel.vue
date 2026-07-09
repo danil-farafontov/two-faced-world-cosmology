@@ -1,13 +1,23 @@
 <script setup>
   const props = defineProps({
     selectedObject: Object,
+    isLoading: {
+      type: Boolean,
+      default: false,
+    },
   });
 </script>
 
 <template>
   <div class="ui-panel info-panel">
     <button class="rune-btn close-btn">✕</button>
-    <div class="info-content">
+
+    <div v-if="isLoading" class="info-panel-loader">
+      <div class="info-panel-spinner"></div>
+      <p class="info-panel-text">Загрузка данных...</p>
+    </div>
+
+    <div v-else class="info-content">
       <h2 id="info-title">{{ selectedObject.name }}</h2>
       <div id="info-details"></div>
       <p id="info-description">{{ selectedObject.description }}</p>
@@ -83,5 +93,33 @@
     text-align: center;
     margin-top: 8px;
     font-style: italic;
+  }
+
+  .info-panel-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 0;
+  }
+
+  .info-panel-spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid rgba(205, 127, 50, 0.3);
+    border-top-color: #cd7f32;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .info-panel-text {
+    margin-top: 12px;
+    color: #d4b896;
+    font-family: 'Georgia', serif;
+    font-size: 13px;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
 </style>

@@ -9,6 +9,7 @@ class SpaceObject {
 
     this.effects = [];
 
+    this.id = data.id;
     this.name = data.name;
     this.type = data.type;
 

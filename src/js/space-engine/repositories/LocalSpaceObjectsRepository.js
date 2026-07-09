@@ -34,8 +34,19 @@ export class LocalSpaceObjectsRepository extends ISpaceRepository {
    */
   getSpaceObjectById(id) {
     return this._simulateDelay().then(() => {
-      const obj = SPACE_OBJECTS.find((item) => item.id === id);
-      return obj || null;
+      // Search in top-level objects
+      let obj = SPACE_OBJECTS.find((item) => item.id === id);
+      if (obj) return obj;
+
+      // Search in nested moons
+      for (const parent of SPACE_OBJECTS) {
+        if (Array.isArray(parent.moons)) {
+          obj = parent.moons.find((moon) => moon.id === id);
+          if (obj) return obj;
+        }
+      }
+
+      return null;
     });
   }
 }
