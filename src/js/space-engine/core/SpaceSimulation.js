@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { COLORS, CAMERA_CONFIG, CONTROLS_CONFIG } from '../constants/constants.js';
-import { SPACE_OBJECTS } from '../constants/space-objects-data.js';
 import { TimeManager } from './TimeManager.js';
 import { InteractionManager } from './InteractionManager.js';
 import OrbitFactory from '../factories/OrbitFactory';
@@ -11,7 +10,7 @@ import Moon from '../objects/Moon';
 import CameraManager from './CameraManager';
 
 class SpaceSimulation {
-  constructor(container) {
+  constructor(container, spaceObjectsData) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(COLORS.background);
 
@@ -26,7 +25,7 @@ class SpaceSimulation {
     this.spaceObjects = [];
 
     this._createStarField();
-    this.initEntities();
+    this.initEntities(spaceObjectsData);
 
     this.interactionManager = new InteractionManager(
       this.camera,
@@ -103,8 +102,8 @@ class SpaceSimulation {
     this.camera.add(this.starField);
   }
 
-  initEntities() {
-    for (const spaceObjectData of SPACE_OBJECTS) {
+  initEntities(spaceObjectsData) {
+    for (const spaceObjectData of spaceObjectsData) {
       let spaceObject = null;
       if (spaceObjectData.type === "Star") {
         spaceObject = new Star(spaceObjectData);

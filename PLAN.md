@@ -37,8 +37,13 @@ two-faced-world-cosmology/
 │   │   ├── App.vue                  # Vue root component
 │   │   ├── components/
 │   │   │   ├── InfoPanel.vue        # Vue UI component
+│   │   │   ├── Loader.vue        # Vue Loader component
 │   │   │   └── TimeControls.vue     # Time controls UI
 │   │   └── space-engine/
+│   │       ├── repositories/
+│   │       │   ├── ISpaceRepository.js       # Base interface
+│   │       │   ├── LocalSpaceObjectsRepository.js # Local data implementation
+│   │       │   └── DirectusSpaceObjectsRepository.js  # Future API implementation
 │   │       ├── core/
 │   │       │   ├── SpaceSimulation.js  # Main orchestrator
 │   │       │   ├── TimeManager.js      # Simulation time & calendar
@@ -230,9 +235,9 @@ two-faced-world-cosmology/
 - [ ] Create space-engine/effects/FirmamentConeEffect.js. Implement it. Add it to the moons.
 
 ### Stage 7.3: Repository.
-- [ ] Create Interface for a Repository.
-- [ ] Create Placeholder for Directus Repository
-- [ ] Implement 'Local' Repository based on current space-objects-data.js
+- [x] Create Interface for a Repository.
+- [x] Create Placeholder for Directus Repository
+- [x] Implement 'Local' Repository based on current space-objects-data.js
 
 ### Stage 7.4: CalendarManager
 - [ ] `CalendarManager`: Decouples fantasy date calculation from simulation time (`simTime`). Provides formatted dates for UI. Somewhat simillar already implemented in TimeManager.

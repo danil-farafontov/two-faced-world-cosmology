@@ -1,10 +1,13 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 import InfoPanel from './components/InfoPanel.vue';
+import Loader from './components/Loader.vue';
 import SpaceSimulation from './space-engine/core/SpaceSimulation.js';
+import { LocalSpaceObjectsRepository } from './space-engine/repositories/LocalSpaceObjectsRepository.js';
 
 const simulationInstance = ref(null);
 const selectedObject = ref(null);
+const isLoading = ref(true);
 
 const handleResize = () => {
   if (simulationInstance.value) {
@@ -23,16 +26,21 @@ const handleObjectUnselected = (event) => {
   console.log(event);
 };
 
-onMounted(() => {
-  const container = document.getElementById('canvas-container');
-  const simulation = new SpaceSimulation(container);
-  simulation.start();
+onMounted(async () => {
+  try {
+    const repository = new LocalSpaceObjectsRepository();
+    const spaceObjectsData = await repository.getSpaceObjects();
 
-  // Save ref into react Vue var to control from UI
-  simulationInstance.value = simulation;
+    const container = document.getElementById('canvas-container');
+    const simulation = new SpaceSimulation(container, spaceObjectsData);
+    simulation.start();
+
+    simulationInstance.value = simulation;
+  } finally {
+    isLoading.value = false;
+  }
 
   window.addEventListener('resize', handleResize);
-  // Catch click on space object events
   window.addEventListener('space-object-selected', handleObjectSelect);
   window.addEventListener('space-object-unselected', handleObjectUnselected);
 });
@@ -47,6 +55,8 @@ onUnmounted(() => {
 <template>
   <div class="app-layout">
     <div id="canvas-container" class="canvas-container"></div>
+
+    <Loader v-if="isLoading" />
 
     <div class="ui-container">
       <!-- UI -->
