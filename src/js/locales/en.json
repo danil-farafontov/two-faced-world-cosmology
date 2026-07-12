@@ -1,0 +1,20 @@
+{
+  "hours": "0 hours | 1 hour | {count} hours",
+  "sec": "sec",
+  "loaders": {
+    "mainLoaderText": "Dancing shadow...",
+    "infoPanelLoaderText": "Grey tide..."
+  },
+  "buttons": {
+    "orbitsBtn": {
+      "title": "Orbits"
+    },
+    "playBtn": {
+      "title": "Pause/Play"
+    },
+    "firmamentBtn": {
+      "text": "Firmament",
+      "prompt": "Choose a spot on the moon's surface.\nAnyone who is at this spot can observe space objects in the sky that fall within the cone."
+    }
+  }
+}

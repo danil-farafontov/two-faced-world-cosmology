@@ -26,7 +26,7 @@
       <button
         id="play-pause-btn"
         class="rune-btn"
-        title="Pause/Play"
+        :title="$t('buttons.playBtn.title')"
         @click="playBtnClicked"
       >
         {{ isPlalying ? "⏸" : "▶" }}
@@ -51,9 +51,12 @@
           />
           <span id="speed-display">x{{ speedMultiplier }}</span>
         </div>
-        <div class="time-scale-info-inline"><span id="time-scale-value">{{ speedMultiplier }}</span> <span id="time-scale-unit">{{ hoursWord }}</span> / СЕК</div>
+        <div class="time-scale-info-inline">
+          <span id="time-scale-unit">
+            {{ $t('hours', speedMultiplier, { count: speedMultiplier }) }}
+            </span> / {{ $t('sec') }}</div>
       </div>
-      <button id="toggle-orbits-btn" class="rune-btn" title="Орбиты">⊕</button>
+      <button id="toggle-orbits-btn" class="rune-btn" :title="$t('buttons.orbitsBtn.title')">⊕</button>
     </div>
   </div>
 </template>
@@ -112,6 +115,7 @@
   white-space: nowrap;
   min-height: 16px;
   line-height: 16px;
+  text-transform: uppercase;
 }
 
 .time-scale-info-inline.placeholder {

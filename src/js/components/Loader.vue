@@ -2,7 +2,7 @@
 defineProps({
   message: {
     type: String,
-    default: 'Танцующая тень...'
+    default: 'loaders.mainLoaderText'
   }
 });
 </script>
@@ -10,7 +10,7 @@ defineProps({
 <template>
   <div class="loader-overlay">
     <div class="loader-spinner"></div>
-    <p class="loader-text">{{ message }}</p>
+    <p class="loader-text">{{ $t(message) }}</p>
   </div>
 </template>
 

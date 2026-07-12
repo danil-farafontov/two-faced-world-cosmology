@@ -14,7 +14,7 @@
 
     <div v-if="isLoading" class="info-panel-loader">
       <div class="info-panel-spinner"></div>
-      <p class="info-panel-text">Загрузка данных...</p>
+      <p class="info-panel-text">{{ $t('loaders.infoPanelLoaderText') }}</p>
     </div>
 
     <div v-else class="info-content">
@@ -22,10 +22,9 @@
       <div id="info-details"></div>
       <p id="info-description">{{ selectedObject.description }}</p>
       <div id="firmament-section">
-        <button id="firmament-btn" class="rune-btn">◐ Небосвод</button>
+        <button id="firmament-btn" class="rune-btn">◐ {{ $t('buttons.firmamentBtn.text') }}</button>
         <div id="firmament-prompt" class="firmament-prompt">
-          Выберите точку на поверхности спутника.<br />
-          Тот, кто находится в этой точке может наблюдать на небосводе объекты попадающие в конус.
+          {{ $t('buttons.firmamentBtn.prompt') }}
         </div>
       </div>
     </div>
@@ -93,6 +92,7 @@
     text-align: center;
     margin-top: 8px;
     font-style: italic;
+    white-space: pre-line;
   }
 
   .info-panel-loader {
