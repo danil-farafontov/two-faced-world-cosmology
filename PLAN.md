@@ -225,7 +225,7 @@ two-faced-world-cosmology/
 - [x] Vue 3 (`<script setup>`) integration
 - [x] `App.vue` — mounts `SpaceSimulation`, listens for `space-object-selected` events
 - [x] `InfoPanel.vue` — UI component (placeholder)
-- [ ] `InfoPanel.vue` — full implementation with selected object data display
+- [x] `InfoPanel.vue` — full implementation with selected object data display
 - [ ] `TimeControls.vue` - controls for speed multiplier, play/pause
 
 #### Stage 7.2: Refactoring. Replacing Inheritance with Composition
@@ -244,7 +244,7 @@ two-faced-world-cosmology/
 
 ### Stage 8: Features
 - [ ] Textures
-- [ ] Rotation of celestial objects
+- [ ] Rotation of Space Objects
 - [ ] Light
 
 ### Stage 9: Timeline
