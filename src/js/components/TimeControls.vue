@@ -1,11 +1,23 @@
 <script setup>
-  import { inject, ref } from 'vue';
+  import { inject, ref, computed } from 'vue';
+  import { declension } from '../utils/declension';
   const spaceSimulation = inject('spaceSimulation');
   const isPlalying = ref(false);
+  const speedMultiplier = ref(1);
+  const hoursWord = computed(() => {
+    return declension(speedMultiplier.value, ['ЧАС', 'ЧАСА', 'ЧАСОВ']);
+  });
   const playBtnClicked = () => {
     isPlalying.value = !isPlalying.value;
     spaceSimulation.value?.toggleSimulationIsPlaying();
   };
+
+
+  const handleSpeedMultiplierChange = () => {
+  if (spaceSimulation.value) {
+    spaceSimulation.value.setSimulationSpeedMultiplier(speedMultiplier.value);
+  }
+};
 </script>
 
 <template>
@@ -28,10 +40,18 @@
       </div>
       <div class="slider-group">
         <div class="slider-row">
-          <input type="range" id="speed-slider" min="1" max="336" value="1" step="1">
-          <span id="speed-display">x1</span>
+          <input
+            id="speed-slider"
+            type="range"
+            min="1"
+            max="256"
+            v-model.number="speedMultiplier"
+            @input="handleSpeedMultiplierChange"
+            step="1"
+          />
+          <span id="speed-display">x{{ speedMultiplier }}</span>
         </div>
-        <div class="time-scale-info-inline"><span id="time-scale-value">1</span> <span id="time-scale-unit">ЧАС</span> / СЕК</div>
+        <div class="time-scale-info-inline"><span id="time-scale-value">{{ speedMultiplier }}</span> <span id="time-scale-unit">{{ hoursWord }}</span> / СЕК</div>
       </div>
       <button id="toggle-orbits-btn" class="rune-btn" title="Орбиты">⊕</button>
     </div>

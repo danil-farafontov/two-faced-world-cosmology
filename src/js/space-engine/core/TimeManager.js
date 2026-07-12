@@ -41,6 +41,10 @@ export class TimeManager {
     this._isPlaying = !this._isPlaying;
   }
 
+  setSpeedMultiplier(value) {
+    this.speedMultiplier = value;
+  }
+
   // Main loop (called in requestAnimationFrame)
   update() {
     const now = performance.now();

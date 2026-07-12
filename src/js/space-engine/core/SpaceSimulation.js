@@ -177,6 +177,9 @@ class SpaceSimulation {
   toggleSimulationIsPlaying() {
     this.timeManager.toggleIsPlaying();
   }
+  setSimulationSpeedMultiplier(speedMultiplier) {
+    this.timeManager.setSpeedMultiplier(speedMultiplier);
+  }
 }
 
 export default SpaceSimulation;
