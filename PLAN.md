@@ -273,6 +273,8 @@ two-faced-world-cosmology/
 
 ### Stage 13: Future improvements
 - [ ] Increase space object hitbox bya adding invisible mesh to the object's container/group
+- [ ] Add fade out gradient to orbit lines (like on NASA site)
+- [ ] Ellipsoid orbits
 
 
 
