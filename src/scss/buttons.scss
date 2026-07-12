@@ -8,6 +8,9 @@
   border-radius: 4px;
   transition: background 0.2s;
 
+  min-width: 36px;
+  min-height: 37px;
+
   &:hover {
     background: rgba(205, 127, 50, 0.3);
   }

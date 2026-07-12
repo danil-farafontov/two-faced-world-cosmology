@@ -173,6 +173,10 @@ class SpaceSimulation {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
+
+  toggleSimulationIsPlaying() {
+    this.timeManager.toggleIsPlaying();
+  }
 }
 
 export default SpaceSimulation;

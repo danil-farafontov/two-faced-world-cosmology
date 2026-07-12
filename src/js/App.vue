@@ -1,20 +1,20 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { provide, ref, shallowRef, onMounted, onUnmounted } from 'vue';
 import InfoPanel from './components/InfoPanel.vue';
+import TimeControls from './components/TimeControls.vue';
 import Loader from './components/Loader.vue';
 import SpaceSimulation from './space-engine/core/SpaceSimulation.js';
 import { LocalSpaceObjectsRepository } from './space-engine/repositories/LocalSpaceObjectsRepository.js';
 
-const simulationInstance = ref(null);
+const spaceSimulation = shallowRef(null);
+provide('spaceSimulation', spaceSimulation);
 const selectedObject = ref(null);
-const isInfoLoading = ref(false);
-const isLoading = ref(true);
+const isInfoLoading = ref(false); // Info Panel loader
+const isLoading = ref(true); // General loader
 const repository = ref(null);
 
 const handleResize = () => {
-  if (simulationInstance.value) {
-    simulationInstance.value.onWindowResize();
-  }
+  spaceSimulation.value?.onWindowResize();
 };
 
 const handleObjectSelect = async (event) => {
@@ -40,10 +40,8 @@ onMounted(async () => {
     const spaceObjectsData = await repository.value.getSpaceObjects();
 
     const container = document.getElementById('canvas-container');
-    const simulation = new SpaceSimulation(container, spaceObjectsData);
-    simulation.start();
-
-    simulationInstance.value = simulation;
+    spaceSimulation.value = new SpaceSimulation(container, spaceObjectsData);
+    spaceSimulation.value.start();
   } finally {
     isLoading.value = false;
   }
@@ -72,6 +70,10 @@ onUnmounted(() => {
         <InfoPanel :selected-object="selectedObject" :is-loading="isInfoLoading" />
       </div>
     </div>
+
+    <div id="time-controls" class="ui-panel">
+      <TimeControls />
+    </div>
   </div>
 </template>
 
@@ -82,5 +84,20 @@ onUnmounted(() => {
   top: 20px;
   right: 20px;
   z-index: 10;
+}
+
+#time-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: calc(100% - 40px);
+  max-width: 600px;
+}
+@media (max-width: 767px) {
+  #time-controls {
+    bottom: 10px;
+  }
 }
 </style>
