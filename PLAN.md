@@ -221,18 +221,21 @@ two-faced-world-cosmology/
   - [x] **Step 5:** Implement `CameraController`. Add smooth zoom/pan transitions when selecting objects.
   - [x] **Step 6:** Finalize `SpaceSimulation` orchestrator. Ensure all systems work together.
 
-#### Stage 7.1: Integration with Vue.js
+#### Stage 7.1: Integration with Vue.js and vue i18n
 - [x] Vue 3 (`<script setup>`) integration
 - [x] `App.vue` — mounts `SpaceSimulation`, listens for `space-object-selected` events
 - [x] `InfoPanel.vue` — UI component (placeholder)
 - [x] `InfoPanel.vue` — full implementation with selected object data display
-- [ ] `TimeControls.vue` - controls for speed multiplier, play/pause
+- [x] `TimeControls.vue` - controls for speed multiplier
+- [x] `TimeControls.vue` - controls for play/pause
+- [ ] `TimeControls.vue` - controls for orbits
+- [x] Implement i18n (localization)
 
 #### Stage 7.2: Refactoring. Replacing Inheritance with Composition
 - [x] Create space-engine/factories/OrbitFactory.js. Move SpaceObject.createOrbitLine() to OrbitFactory.
 - [x] Create space-engine/effects/GlowEffect.js. Move SpaceObject.createGlowMesh() to GlowEffect.js.
 - [x] Create space-engine/effects/RingsEffect.js. Move Planet.createRingsMeshes() to RingsEffect.js.
-- [ ] Create space-engine/effects/FirmamentConeEffect.js. Implement it. Add it to the moons.
+- [ ] Create space-engine/effects/FirmamentConeEffect.js. Implement it. Add it to the moons. Add control to the InfoPanel.vue. Limit firmamentBtn to be visible only on moon's InfoPanel
 
 ### Stage 7.3: Repository.
 - [x] Create Interface for a Repository.
