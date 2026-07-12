@@ -265,11 +265,14 @@ two-faced-world-cosmology/
 - [ ] Desktop screens (1024px+)
 - [ ] Control optimization (touch + mouse)
 
-### Stage 21: Polishing
+### Stage 12: Polishing
 - [ ] Glow effects (bloom)?
 - [ ] Transition animations between scale modes
 - [ ] Performance optimization
 - [ ] Testing on real devices
+
+### Stage 13: Future improvements
+- [ ] Increase space object hitbox bya adding invisible mesh to the object's container/group
 
 
 
