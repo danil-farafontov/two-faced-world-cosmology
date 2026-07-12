@@ -31,7 +31,7 @@ export const SPACE_OBJECTS = [
     type: "Planet",
     radius: 5,
     orbitalPeriod: 1416, // 59 Earth days
-    orbitRadius: 285,
+    orbitRadius: 275,
     color: 0x888888,
     description: 'Маленькая горячая планета, ближайшая к солнцам. (59 дней)'
   },
@@ -41,7 +41,7 @@ export const SPACE_OBJECTS = [
     type: "Planet",
     radius: 8,
     orbitalPeriod: 5400, // 225 Earth days
-    orbitRadius: 380,
+    orbitRadius: 370,
     color: 0xAA7755,
     description: 'Скалистая планета среднего размера. (225 дней)'
   },
@@ -69,7 +69,7 @@ export const SPACE_OBJECTS = [
           type: 'Moon',
           radius: 3,
           orbitalPeriod: 24, // 1.0 Earth days
-          orbitRadius: 38,
+          orbitRadius: 39,
           color: 0x8B0000,
           description: 'Мир Императора. Мир с развитой цивилизацией. Сатуриновый Трон.',
           isInhabited: true
@@ -80,7 +80,7 @@ export const SPACE_OBJECTS = [
           type: 'Moon',
           radius: 3.5,
           orbitalPeriod: 48.0024, // 2.0001 Earth days
-          orbitRadius: 47,
+          orbitRadius: 49,
           color: 0xF4A460,
           description: 'Спутник - разумное существо, огромный океан живой субстанции. Весь мир — один организм.',
           isInhabited: true
@@ -91,7 +91,7 @@ export const SPACE_OBJECTS = [
           type: 'Moon',
           radius: 3.2,
           orbitalPeriod: 96.0048, // 4.0002 Earth days
-          orbitRadius: 56,
+          orbitRadius: 59,
           color: 0x6495ED,
           description: 'Полузатопленный мир, портовые города на островах и побережьях.',
           isInhabited: true
@@ -102,7 +102,7 @@ export const SPACE_OBJECTS = [
           type: 'Moon',
           radius: 3.8,
           orbitalPeriod: 192.0096, // 8.0004 Earth days
-          orbitRadius: 65,
+          orbitRadius: 69,
           color: 0xBBAA99,
           description: 'TBD',
           isInhabited: true
@@ -113,7 +113,7 @@ export const SPACE_OBJECTS = [
           type: 'Moon',
           radius: 4,
           orbitalPeriod: 384.0192, // 16.0008 Earth days
-          orbitRadius: 75,
+          orbitRadius: 79,
           color: 0x228B22,
           description: 'Мир Песнопевцев и Слепцов. Зелёный мир с растительностью, джунгли, грибы, споры.',
           isInhabited: true
@@ -124,7 +124,7 @@ export const SPACE_OBJECTS = [
           type: 'Moon',
           radius: 4.5,
           orbitalPeriod: 768.0384, // 32.0016 Earth days
-          orbitRadius: 85,
+          orbitRadius: 89,
           color: 0xFFF0F5,
           description: 'Скалистый мир алмазов и суровых воинов.',
           isInhabited: true
@@ -135,7 +135,7 @@ export const SPACE_OBJECTS = [
           type: 'Moon',
           radius: 3.5,
           orbitalPeriod: 1536.0768, // 64.0032 Earth days
-          orbitRadius: 96,
+          orbitRadius: 99,
           color: 0x8B008B,
           description: 'Мир Сумерек и Рассвета. Тёмный и ледяной мир с биолюминесценцией ночью; пылающая огнём пустыня днём.',
           isInhabited: true
@@ -148,7 +148,7 @@ export const SPACE_OBJECTS = [
     type: "Planet",
     radius: 14,
     orbitalPeriod: 806400, // 100 Earth years
-    orbitRadius: 820,
+    orbitRadius: 850,
     color: 0xCC8855,
     description: 'Газовый гигант, поменьше Сатурна. (100 лет)'
   },
@@ -158,7 +158,7 @@ export const SPACE_OBJECTS = [
     type: "Planet",
     radius: 12,
     orbitalPeriod: 1330560, // 165 Earth years
-    orbitRadius: 950,
+    orbitRadius: 990,
     color: 0x88BBDD,
     description: 'Ледяной гигант. (165 лет)'
   },
