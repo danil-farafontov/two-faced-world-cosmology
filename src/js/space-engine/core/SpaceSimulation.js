@@ -23,6 +23,7 @@ class SpaceSimulation {
     this.timeManager = new TimeManager();
     this.starField = null;
     this.spaceObjects = [];
+    this.showOrbits = true;
 
     this._createStarField();
     this.initEntities(spaceObjectsData);
@@ -179,6 +180,12 @@ class SpaceSimulation {
   }
   setSimulationSpeedMultiplier(speedMultiplier) {
     this.timeManager.setSpeedMultiplier(speedMultiplier);
+  }
+  toggleShowOrbits() {
+    this.showOrbits = !this.showOrbits;
+    for (const spaceObject of this.spaceObjects) {
+      spaceObject.showOrbit = this.showOrbits;
+    }
   }
 }
 

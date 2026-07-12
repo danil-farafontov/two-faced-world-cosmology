@@ -4,6 +4,8 @@ import RingsEffect from '../effects/RingsEffect';
 import { RENDER_ORDER } from '../constants/constants.js';
 
 class SpaceObject {
+  #showOrbit = true;
+
   constructor(data, parentObject = null) {
     this.container = new THREE.Group();
 
@@ -27,7 +29,7 @@ class SpaceObject {
     this.position = new THREE.Vector3(0, 0, 0);
 
     this.orbitMesh = null;
-    this.showOrbit = data.showOrbit ?? true;
+    this.#showOrbit = data.showOrbit ?? true;
 
     this.glowEnabled = data.glowEnabled ?? false;
     this.glowColor = data.glowColor ?? data.color;
@@ -141,9 +143,13 @@ class SpaceObject {
       if (this.orbitMesh) {
         this.orbitMesh.position.x = this.parentObject ? this.parentObject.position.x : 0;
         this.orbitMesh.position.y = this.parentObject ? this.parentObject.position.y : 0;
-        this.orbitMesh.visible = this.showOrbit;
+        this.orbitMesh.visible = this.#showOrbit;
       }
     }
+  }
+
+  set showOrbit(value) {
+    this.#showOrbit = value;
   }
 }
 

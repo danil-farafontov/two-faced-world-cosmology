@@ -228,7 +228,7 @@ two-faced-world-cosmology/
 - [x] `InfoPanel.vue` — full implementation with selected object data display
 - [x] `TimeControls.vue` - controls for speed multiplier
 - [x] `TimeControls.vue` - controls for play/pause
-- [ ] `TimeControls.vue` - controls for orbits
+- [x] `TimeControls.vue` - controls for orbits
 - [x] Implement i18n (localization)
 
 #### Stage 7.2: Refactoring. Replacing Inheritance with Composition

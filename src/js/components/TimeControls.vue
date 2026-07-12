@@ -3,6 +3,7 @@
   import { declension } from '../utils/declension';
   const spaceSimulation = inject('spaceSimulation');
   const isPlalying = ref(false);
+  const showOrbits = ref(true);
   const speedMultiplier = ref(1);
   const hoursWord = computed(() => {
     return declension(speedMultiplier.value, ['ЧАС', 'ЧАСА', 'ЧАСОВ']);
@@ -11,7 +12,10 @@
     isPlalying.value = !isPlalying.value;
     spaceSimulation.value?.toggleSimulationIsPlaying();
   };
-
+  const orbitsBtnClicked = () => {
+    showOrbits.value = !showOrbits.value;
+    spaceSimulation.value?.toggleShowOrbits();
+  }
 
   const handleSpeedMultiplierChange = () => {
   if (spaceSimulation.value) {
@@ -56,7 +60,12 @@
             {{ $t('hours', speedMultiplier, { count: speedMultiplier }) }}
             </span> / {{ $t('sec') }}</div>
       </div>
-      <button id="toggle-orbits-btn" class="rune-btn" :title="$t('buttons.orbitsBtn.title')">⊕</button>
+      <button
+        id="toggle-orbits-btn"
+        class="rune-btn"
+        :title="$t('buttons.orbitsBtn.title')"
+        @click="orbitsBtnClicked"
+        >{{ showOrbits ? "⊕" : "⊗" }}</button>
     </div>
   </div>
 </template>
