@@ -157,6 +157,11 @@ class SpaceSimulation {
         this.starField.scale.set(inverseZoom, inverseZoom, 1);
     }
 
+    /*console.log({
+      geometries: this.renderer.info.memory.geometries,
+      programs: this.renderer.info.programs.length,
+      textures: this.renderer.info.memory.textures
+    });*/
 
     this.renderer.render(this.scene, this.camera);
   }

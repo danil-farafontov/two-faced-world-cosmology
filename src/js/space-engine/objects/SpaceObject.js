@@ -1,15 +1,18 @@
 import * as THREE from 'three';
 import GlowEffect from '../effects/GlowEffect';
 import RingsEffect from '../effects/RingsEffect';
+import SelectedSpaceObjectEffect from '../effects/SelectedSpaceObjectEffect';
 import { RENDER_ORDER } from '../constants/constants.js';
 
 class SpaceObject {
   #showOrbit = true;
+  #selected = false;
 
   constructor(data, parentObject = null) {
     this.container = new THREE.Group();
 
-    this.effects = [];
+    this.effects = []; // GlowEffect, RingsEffect
+    this.selectedEffect = null; // SelectedSpaceObjectEffect stored separately because we need to switch it on and off actively
 
     this.id = data.id;
     this.name = data.name;
@@ -42,7 +45,7 @@ class SpaceObject {
 
   onClick() {
     console.log(`SpaceObject.onClick() - Clicked: ${this.type} - ${this.name}`);
-
+    this.selected = true;
     // Send global event
     window.dispatchEvent(new CustomEvent('space-object-selected', {
       detail: { objectInstance: this }
@@ -150,6 +153,20 @@ class SpaceObject {
 
   set showOrbit(value) {
     this.#showOrbit = value;
+  }
+
+  set selected(value) {
+    this.#selected = value;
+    if (this.#selected) {
+      this.selectedEffect = new SelectedSpaceObjectEffect(this.radius);
+      this.selectedEffect.build();
+      this.selectedEffect.attachTo(this.container);
+    } else {
+      if (this.selectedEffect != null) {
+        this.selectedEffect.destroy();
+      }
+
+    }
   }
 }
 

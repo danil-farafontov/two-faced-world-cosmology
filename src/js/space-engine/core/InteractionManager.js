@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 
 export class InteractionManager {
+
+  #selectedSpaceObject = null;
+
   constructor(camera, container, spaceObjects) {
     this.camera = camera;
     this.container = container;
@@ -37,7 +40,15 @@ export class InteractionManager {
       const clickedObject = this.spaceObjects.find(obj => obj.mesh === clickedMesh);
 
       if (clickedObject) {
-        clickedObject.onClick(); // call object's onClick
+        if (clickedObject == this.#selectedSpaceObject) {
+          // Clicked the same Space Object. Do nothing.
+        } else {
+          if (this.#selectedSpaceObject != null) {
+            this.#selectedSpaceObject.selected = false; // This setter will initiate Selected Effect destroy also
+          }
+          this.#selectedSpaceObject = clickedObject;
+          clickedObject.onClick(); // call object's onClick. It will add Selected Effect too
+        }
       } else {
          window.dispatchEvent(new CustomEvent('space-object-unselected'));
       }
@@ -45,4 +56,5 @@ export class InteractionManager {
        window.dispatchEvent(new CustomEvent('space-object-unselected'));
     }
   }
+
 }
