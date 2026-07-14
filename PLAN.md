@@ -250,6 +250,7 @@ two-faced-world-cosmology/
 - [ ] Textures
 - [ ] Rotation of Space Objects
 - [ ] Light
+- [ ] Improve camera.focuseOn - allow to zoom when focusOn animation finished.
 
 ### Stage 9: Timeline
 - [ ] Decide on the calendar. Which calendar to use? What are the fantasy month names? What is the composition of the year and months?
@@ -280,6 +281,7 @@ two-faced-world-cosmology/
 - [ ] Add fade out gradient to orbit lines (like on NASA site)
 - [ ] Ellipsoid orbits
 - [ ] Fantasy "Flows" between moons when they are close to each other
+- [ ] FirmamentConePlacement - replace OS cursor with internal cursor. To hide that line is late to os cursor
 
 
 
