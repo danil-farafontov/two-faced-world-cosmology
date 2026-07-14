@@ -25,12 +25,12 @@ class FirmamentConePlacementEffect {
   }
 
   update(simTime, currentMouseWorldPosition) {
-    const parentGlobalPos = new THREE.Vector3();
-    this.mesh.parent.getWorldPosition(parentGlobalPos);
+    const localMousePos = new THREE.Vector3(currentMouseWorldPosition.x, currentMouseWorldPosition.y, 0);
+    this.mesh.parent.worldToLocal(localMousePos);
 
     const positionAttribute = this.mesh.geometry.attributes.position;
-    const newX = currentMouseWorldPosition.x - parentGlobalPos.x;
-    const newY = currentMouseWorldPosition.y - parentGlobalPos.y;
+    const newX = localMousePos.x; //currentMouseWorldPosition.x - parentGlobalPos.x;
+    const newY = localMousePos.y; //currentMouseWorldPosition.y - parentGlobalPos.y;
     positionAttribute.setX(1, newX);
     positionAttribute.setY(1, newY);
     this.angle = Math.atan2(newY, newX);

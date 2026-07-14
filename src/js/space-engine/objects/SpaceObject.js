@@ -63,6 +63,7 @@ class SpaceObject {
   }
 
   addFirmamentConePlacementEffect() {
+    this.clearFirmamentConeEffect();
     const firmamentConePlacementEffect = new FirmamentConePlacementEffect(this.radius, 0);
     firmamentConePlacementEffect.build();
     this.firmamentConePlacementEffect = firmamentConePlacementEffect;
@@ -77,6 +78,12 @@ class SpaceObject {
 
     this.firmamentConePlacementEffect.destroy();
     this.firmamentConePlacementEffect = null;
+  }
+  clearFirmamentConeEffect() {
+    if (this.firmamentConeEffect != null) {
+      this.firmamentConeEffect.destroy();
+      this.firmamentConeEffect = null;
+    }
   }
 
   #createTextureFromFunction() {
@@ -164,6 +171,8 @@ class SpaceObject {
         this.position.y += this.parentObject.position.y;
       }
       this.container.position.copy(this.position);
+      this.container.rotation.z = angle;
+
 
       if (this.orbitMesh) {
         this.orbitMesh.position.x = this.parentObject ? this.parentObject.position.x : 0;
@@ -192,10 +201,7 @@ class SpaceObject {
         this.selectedEffect.destroy();
         this.selectedEffect = null;
       }
-      if (this.firmamentConeEffect != null) {
-        this.firmamentConeEffect.destroy();
-        this.firmamentConeEffect = null;
-      }
+      this.clearFirmamentConeEffect();
       if (this.firmamentConePlacementEffect != null) {
         this.firmamentConePlacementEffect.destroy();
         this.firmamentConePlacementEffect = null;
