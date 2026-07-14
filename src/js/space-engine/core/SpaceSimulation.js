@@ -144,9 +144,10 @@ class SpaceSimulation {
     requestAnimationFrame(this._animate);
 
     this.timeManager.update();
+    const currentMouseWorldPosition = this.interactionManager.currentMouseWorldPosition;
 
     for (const entity of this.spaceObjects) {
-      entity.update(this.timeManager.simTime);
+      entity.update(this.timeManager.simTime, currentMouseWorldPosition);
     }
     this.cameraManager.update();
 
@@ -191,6 +192,9 @@ class SpaceSimulation {
     for (const spaceObject of this.spaceObjects) {
       spaceObject.showOrbit = this.showOrbits;
     }
+  }
+  startAddingFirmamentCone() {
+    this.interactionManager.startAddingFirmamentCone();
   }
 }
 

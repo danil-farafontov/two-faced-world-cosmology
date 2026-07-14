@@ -236,7 +236,7 @@ two-faced-world-cosmology/
 - [x] Create space-engine/effects/GlowEffect.js. Move SpaceObject.createGlowMesh() to GlowEffect.js.
 - [x] Create space-engine/effects/RingsEffect.js. Move Planet.createRingsMeshes() to RingsEffect.js.
 - [x] Create space-engine/effects/SelectedSpaceObjectEffect.js.
-- [ ] Create space-engine/effects/FirmamentConeEffect.js. Implement it. Add it to the moons. Add control to the InfoPanel.vue. Limit firmamentBtn to be visible only on moon's InfoPanel
+- [x] Create space-engine/effects/FirmamentConeEffect.js. Implement it. Add it to the moons. Add control to the InfoPanel.vue. Limit firmamentBtn to be visible only on moon's InfoPanel
 
 ### Stage 7.3: Repository.
 - [x] Create Interface for a Repository.

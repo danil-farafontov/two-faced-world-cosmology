@@ -18,10 +18,10 @@
   }
 
   const handleSpeedMultiplierChange = () => {
-  if (spaceSimulation.value) {
-    spaceSimulation.value.setSimulationSpeedMultiplier(speedMultiplier.value);
-  }
-};
+    if (spaceSimulation.value) {
+      spaceSimulation.value.setSimulationSpeedMultiplier(speedMultiplier.value);
+    }
+  };
 </script>
 
 <template>

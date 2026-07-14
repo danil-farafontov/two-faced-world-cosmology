@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import GlowEffect from '../effects/GlowEffect';
 import RingsEffect from '../effects/RingsEffect';
 import SelectedSpaceObjectEffect from '../effects/SelectedSpaceObjectEffect';
+import FirmamentConeEffect from '../effects/FirmamentConeEffect';
+import FirmamentConePlacementEffect from '../effects/FirmamentConePlacementEffect';
 import { RENDER_ORDER } from '../constants/constants.js';
 
 class SpaceObject {
@@ -13,6 +15,8 @@ class SpaceObject {
 
     this.effects = []; // GlowEffect, RingsEffect
     this.selectedEffect = null; // SelectedSpaceObjectEffect stored separately because we need to switch it on and off actively
+    this.firmamentConeEffect = null;
+    this.firmamentConePlacementEffect = null;
 
     this.id = data.id;
     this.name = data.name;
@@ -45,6 +49,7 @@ class SpaceObject {
 
   onClick() {
     console.log(`SpaceObject.onClick() - Clicked: ${this.type} - ${this.name}`);
+
     this.selected = true;
     // Send global event
     window.dispatchEvent(new CustomEvent('space-object-selected', {
@@ -55,6 +60,23 @@ class SpaceObject {
   addEffect(effect) {
     this.effects.push(effect);
     effect.attachTo(this.container);
+  }
+
+  addFirmamentConePlacementEffect() {
+    const firmamentConePlacementEffect = new FirmamentConePlacementEffect(this.radius, 0);
+    firmamentConePlacementEffect.build();
+    this.firmamentConePlacementEffect = firmamentConePlacementEffect;
+    firmamentConePlacementEffect.attachTo(this.container);
+  }
+
+  addFirmamentConeEffect() {
+    const fcEffect = new FirmamentConeEffect(300, this.firmamentConePlacementEffect.angle);
+    fcEffect.build();
+    this.firmamentConeEffect = fcEffect;
+    fcEffect.attachTo(this.container);
+
+    this.firmamentConePlacementEffect.destroy();
+    this.firmamentConePlacementEffect = null;
   }
 
   #createTextureFromFunction() {
@@ -128,7 +150,7 @@ class SpaceObject {
     this.orbitMesh = orbitMesh;
   }
 
-  update(simTime) {
+  update(simTime, currentMouseWorldPosition) {
     if (this.orbitalPeriod > 0) {
       const angle = this.startAngle + ((simTime * 2 * Math.PI) / this.orbitalPeriod);
 
@@ -148,6 +170,10 @@ class SpaceObject {
         this.orbitMesh.position.y = this.parentObject ? this.parentObject.position.y : 0;
         this.orbitMesh.visible = this.#showOrbit;
       }
+
+      if (this.firmamentConePlacementEffect != null) {
+        this.firmamentConePlacementEffect.update(simTime, currentMouseWorldPosition)
+      }
     }
   }
 
@@ -164,8 +190,16 @@ class SpaceObject {
     } else {
       if (this.selectedEffect != null) {
         this.selectedEffect.destroy();
+        this.selectedEffect = null;
       }
-
+      if (this.firmamentConeEffect != null) {
+        this.firmamentConeEffect.destroy();
+        this.firmamentConeEffect = null;
+      }
+      if (this.firmamentConePlacementEffect != null) {
+        this.firmamentConePlacementEffect.destroy();
+        this.firmamentConePlacementEffect = null;
+      }
     }
   }
 }

@@ -1,4 +1,6 @@
 <script setup>
+  import { inject } from 'vue';
+  const spaceSimulation = inject('spaceSimulation');
   const props = defineProps({
     selectedObject: Object,
     isLoading: {
@@ -6,6 +8,9 @@
       default: false,
     },
   });
+  const handleFirmamentBtnClicked = () => {
+    spaceSimulation.value?.startAddingFirmamentCone();
+  };
 </script>
 
 <template>
@@ -21,8 +26,12 @@
       <h2 id="info-title">{{ selectedObject.name }}</h2>
       <div id="info-details"></div>
       <p id="info-description">{{ selectedObject.description }}</p>
-      <div id="firmament-section">
-        <button id="firmament-btn" class="rune-btn">◐ {{ $t('buttons.firmamentBtn.text') }}</button>
+      <div v-if="selectedObject.type == 'Moon'" id="firmament-section">
+        <button
+          id="firmament-btn"
+          class="rune-btn"
+          @click="handleFirmamentBtnClicked"
+        >◐ {{ $t('buttons.firmamentBtn.text') }}</button>
         <div id="firmament-prompt" class="firmament-prompt">
           {{ $t('buttons.firmamentBtn.prompt') }}
         </div>

@@ -3,6 +3,7 @@ import * as THREE from 'three';
 export class InteractionManager {
 
   #selectedSpaceObject = null;
+  #mode = "select-space-object";  // select-space-object | select-cone-vertex
 
   constructor(camera, container, spaceObjects) {
     this.camera = camera;
@@ -11,12 +12,15 @@ export class InteractionManager {
     this.raycaster = new THREE.Raycaster();
     this.mouse = new THREE.Vector2();
 
+    this.currentMouseWorldPosition = new THREE.Vector2();
+
     this.initEvents();
   }
 
   initEvents() {
     // Add event listener directly on container (canvas). Not on window!
     this.container.addEventListener('click', (event) => this.onClick(event));
+    this.container.addEventListener('mousemove', (event) => this.onMouseMove(event));
   }
 
   onClick(event) {
@@ -24,6 +28,12 @@ export class InteractionManager {
     const rect = this.container.getBoundingClientRect();
     this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
     this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    if (this.#mode == "select-cone-vertex") {
+      this.#selectedSpaceObject.addFirmamentConeEffect();
+      this.#mode = "select-space-object";
+      return;
+    }
 
     // 2. Update ray
     this.raycaster.setFromCamera(this.mouse, this.camera);
@@ -50,11 +60,39 @@ export class InteractionManager {
           clickedObject.onClick(); // call object's onClick. It will add Selected Effect too
         }
       } else {
-         window.dispatchEvent(new CustomEvent('space-object-unselected'));
+        if (this.#selectedSpaceObject != null) {
+          this.#selectedSpaceObject.selected = false; // This setter will initiate Selected Effect destroy also
+        }
+        window.dispatchEvent(new CustomEvent('space-object-unselected'));
       }
     } else {
-       window.dispatchEvent(new CustomEvent('space-object-unselected'));
+      if (this.#selectedSpaceObject != null) {
+        this.#selectedSpaceObject.selected = false; // This setter will initiate Selected Effect destroy also
+      }
+      window.dispatchEvent(new CustomEvent('space-object-unselected'));
     }
+  }
+
+  onMouseMove(event) {
+    if (this.#mode === 'select-cone-vertex' && this.#selectedSpaceObject) {
+      const rect = this.container.getBoundingClientRect();
+
+      this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      this.raycaster.setFromCamera(this.mouse, this.camera);
+      let mousePosition = this.raycaster.ray.at(0, new THREE.Vector3());
+
+      this.currentMouseWorldPosition.x = mousePosition.x;
+      this.currentMouseWorldPosition.y = mousePosition.y;
+
+      return;
+    }
+  }
+
+  startAddingFirmamentCone() {
+    this.#selectedSpaceObject.addFirmamentConePlacementEffect();
+    this.#mode = "select-cone-vertex";
   }
 
 }

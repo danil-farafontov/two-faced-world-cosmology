@@ -19,7 +19,11 @@ class CameraManager {
       const { objectInstance } = event.detail;
 
       if (objectInstance) {
-        this.focusOn(objectInstance);
+        if (objectInstance.type == "Moon") {
+          this.focusOn(objectInstance, 5);
+        } else {
+          this.focusOn(objectInstance);
+        }
       }
     });
 
