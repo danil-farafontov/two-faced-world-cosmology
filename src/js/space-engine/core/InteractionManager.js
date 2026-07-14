@@ -77,16 +77,21 @@ export class InteractionManager {
     if (this.#mode === 'select-cone-vertex' && this.#selectedSpaceObject) {
       const rect = this.container.getBoundingClientRect();
 
+      // save NDC coordinates
       this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-      this.raycaster.setFromCamera(this.mouse, this.camera);
-      let mousePosition = this.raycaster.ray.at(0, new THREE.Vector3());
+      return;
+    }
+  }
 
+  updateMouseWorldPosition() {
+    if (this.#mode === 'select-cone-vertex' && this.#selectedSpaceObject) {
+      this.raycaster.setFromCamera(this.mouse, this.camera);
+      const mousePosition = this.raycaster.ray.at(0, new THREE.Vector3());
+      // Convert NDC mouse coordinates to World coordinates
       this.currentMouseWorldPosition.x = mousePosition.x;
       this.currentMouseWorldPosition.y = mousePosition.y;
-
-      return;
     }
   }
 

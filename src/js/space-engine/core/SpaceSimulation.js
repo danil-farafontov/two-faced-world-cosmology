@@ -144,6 +144,7 @@ class SpaceSimulation {
     requestAnimationFrame(this._animate);
 
     this.timeManager.update();
+    this.interactionManager.updateMouseWorldPosition();
     const currentMouseWorldPosition = this.interactionManager.currentMouseWorldPosition;
 
     for (const entity of this.spaceObjects) {
