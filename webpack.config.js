@@ -15,6 +15,9 @@ module.exports = {
     filename: '[name]/bundle.[contenthash].js',
     clean: true,
     assetModuleFilename: '[name]/assets/[hash][ext][query]',
+    publicPath: process.env.NODE_ENV === 'production'
+      ? '/two-faced-world-cosmology/'
+      : '/'
   },
   module: {
     rules: [
@@ -61,6 +64,12 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
     new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      template: './public/index-oop.html',
+      filename: 'index.html', // <--- duplicate index.html for github pages
+      title: 'Миры Двуликого (ООП)',
+      chunks: ['oop'],
+    }),
     new HtmlWebpackPlugin({
       template: './public/index-oop.html',
       filename: 'oop/index.html',
