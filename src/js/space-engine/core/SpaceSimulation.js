@@ -8,6 +8,7 @@ import Star from '../objects/Star';
 import Planet from '../objects/Planet';
 import Moon from '../objects/Moon';
 import CameraManager from './CameraManager';
+import { Z_POSITIONING } from '../constants/constants.js';
 
 class SpaceSimulation {
   constructor(container, spaceObjectsData) {
@@ -56,6 +57,7 @@ class SpaceSimulation {
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
     container.appendChild(renderer.domElement);
     return renderer;
   }
@@ -82,7 +84,7 @@ class SpaceSimulation {
     for (let i = 0; i < count; i++) {
       positions[i * 3] = (Math.random() - 0.5) * spread;
       positions[i * 3 + 1] = (Math.random() - 0.5) * spread;
-      positions[i * 3 + 2] = -5;
+      positions[i * 3 + 2] = Z_POSITIONING.STAR_FIELD;
 
       const brightness = 0.5 + Math.random() * 0.5;
       colors[i * 3] = brightness;
@@ -133,11 +135,15 @@ class SpaceSimulation {
     // Create orbits after all objects are built
     for (const spaceObject of this.spaceObjects) {
       const orbitMesh = OrbitFactory.create(spaceObject.orbitRadius, spaceObject.color);
+      orbitMesh.position.z = Z_POSITIONING.ORBIT;
       if (orbitMesh) {
         spaceObject._setOrbitMesh(orbitMesh);
         this.scene.add(orbitMesh);
       }
     }
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.15);
+    this.scene.add(ambientLight);
   }
 
   _animate() {

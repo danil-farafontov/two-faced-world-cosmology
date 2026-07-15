@@ -36,3 +36,41 @@ export function createGasGiantTexture(textureGeneratorParams) {
     }
   }
 }
+
+export function createStarTexture(textureGeneratorParams) {
+  const baseColor = textureGeneratorParams.baseColor ?? 0xFFFFFF;
+  const ctx = textureGeneratorParams.ctx;
+
+  // Разбираем HEX-число на RGB компоненты
+  const r = (baseColor >> 16) & 0xff;
+  const g = (baseColor >> 8) & 0xff;
+  const b = baseColor & 0xff;
+
+  // Заливаем фон базовым цветом звезды
+  ctx.fillStyle = `rgb(${r},${g},${b})`;
+  ctx.fillRect(0, 0, 256, 128);
+
+  // Создаем горизонтальный градиент, который имитирует затухание яркости к краям диска (эффект объема)
+  const gradient = ctx.createLinearGradient(0, 0, 256, 0);
+
+  // В центре (на экваторе сферы) звезда горит ярче всего (почти белая)
+  gradient.addColorStop(0, `rgba(255, 255, 255, 0.3)`);
+  gradient.addColorStop(0.25, `rgba(${r},${g},${b}, 0)`);
+  gradient.addColorStop(0.5, `rgba(255, 255, 255, 0.7)`); // Центр развертки
+  gradient.addColorStop(0.75, `rgba(${r},${g},${b}, 0)`);
+  gradient.addColorStop(1, `rgba(255, 255, 255, 0.3)`);
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 256, 128);
+
+  // Добавляем мелкую плазменную зернистость (солнечные гранулы)
+  for (let i = 0; i < 1500; i++) {
+    const x = Math.random() * 256;
+    const y = Math.random() * 128;
+    const size = Math.random() * 2 + 1;
+    // Случайные яркие и темные точки плазмы
+    const alpha = Math.random() * 0.15;
+    ctx.fillStyle = Math.random() > 0.5 ? `rgba(255,255,255,${alpha})` : `rgba(0,0,0,${alpha})`;
+    ctx.fillRect(x, y, size, size);
+  }
+}

@@ -1,5 +1,8 @@
 import { COLORS } from './constants.js';
-import { createGasGiantTexture } from '../utils/texture-generators.js';
+import {
+  createGasGiantTexture,
+  createStarTexture
+} from '../utils/texture-generators.js';
 
 // Sun system configuration
 export const SPACE_OBJECTS = [
@@ -11,6 +14,8 @@ export const SPACE_OBJECTS = [
     orbitalPeriod: 336,
     orbitRadius: 100,
     color: COLORS.sunYellow,
+    textureGeneratorFunc: createStarTexture,
+    textureGeneratorParams: {baseColor: COLORS.sunYellow},
     startAngle: 2 * Math.PI,
     glowEnabled: true
   },
@@ -22,6 +27,8 @@ export const SPACE_OBJECTS = [
     orbitalPeriod: 336,
     orbitRadius: 100,
     color: COLORS.sunRed,
+    textureGeneratorFunc: createStarTexture,
+    textureGeneratorParams: {baseColor: COLORS.sunRed},
     startAngle: Math.PI,
     glowEnabled: true
   },
@@ -53,6 +60,8 @@ export const SPACE_OBJECTS = [
     orbitalPeriod: 181440, // 22.5 Earth years
     orbitRadius: 600,
     color: 0xD4A843,
+    castShadow: true,
+    receiveShadow: true,
     textureGeneratorFunc: createGasGiantTexture,
     textureGeneratorParams: {baseColor: 0xD4A843},
     description: 'Газовый гигант с кольцами — его спутники населенные. (22.5 лет)',

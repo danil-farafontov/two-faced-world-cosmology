@@ -4,7 +4,6 @@ import RingsEffect from '../effects/RingsEffect';
 import SelectedSpaceObjectEffect from '../effects/SelectedSpaceObjectEffect';
 import FirmamentConeEffect from '../effects/FirmamentConeEffect';
 import FirmamentConePlacementEffect from '../effects/FirmamentConePlacementEffect';
-import { RENDER_ORDER } from '../constants/constants.js';
 
 class SpaceObject {
   #showOrbit = true;
@@ -32,8 +31,11 @@ class SpaceObject {
 
     this.parentObject = parentObject;
 
+    this.material = null;
     this.mesh = null;
     this.position = new THREE.Vector3(0, 0, 0);
+    this.castShadow = data.castShadow; // do not set default, set it in child classes
+    this.receiveShadow = data.receiveShadow; // do not set default, set it in child classes
 
     this.orbitMesh = null;
     this.#showOrbit = data.showOrbit ?? true;
@@ -71,7 +73,7 @@ class SpaceObject {
   }
 
   addFirmamentConeEffect() {
-    const fcEffect = new FirmamentConeEffect(300, this.firmamentConePlacementEffect.angle);
+    const fcEffect = new FirmamentConeEffect(200, this.firmamentConePlacementEffect.angle);
     fcEffect.build();
     this.firmamentConeEffect = fcEffect;
     fcEffect.attachTo(this.container);
@@ -101,38 +103,49 @@ class SpaceObject {
   }
 
   build() {
-    const geometry = new THREE.CircleGeometry(this.radius, 48);
-    let material;
-    if (this.textureGeneratorFunc == null) {
-      material = new THREE.MeshBasicMaterial({ color: this.color });
-      material.side = THREE.DoubleSide;
+    const geometry = new THREE.SphereGeometry(this.radius, 32, 32);
+    if (this.type.includes('Star')) {
+      if (this.textureGeneratorFunc != null) {
+        const generatedTexture = this.#createTextureFromFunction();
+        this.material = new THREE.MeshBasicMaterial({
+          map: generatedTexture
+        });
+      } else {
+        this.material = new THREE.MeshBasicMaterial({ color: this.color });
+      }
     } else {
-      const generatedTexture = this.#createTextureFromFunction();
-      material = new THREE.MeshBasicMaterial({
-          map: generatedTexture
-      });
-      /*
-      // Use this when enable light in future
-      this.material = new THREE.MeshLambertMaterial({
-          map: generatedTexture
-      });
-      */
+      if (this.textureGeneratorFunc != null) {
+        const generatedTexture = this.#createTextureFromFunction();
+        this.material = new THREE.MeshPhongMaterial({
+            map: generatedTexture,
+            color: 0xffffff
+        });
+      } else {
+        this.material = new THREE.MeshPhongMaterial({
+          color: this.color,
+          shininess: 10
+        });
+      }
     }
 
-    this.mesh = new THREE.Mesh(geometry, material);
-    if (this.type.includes('Star')) {
-      this.mesh.renderOrder = RENDER_ORDER.STAR;
-    } else if (this.type.includes('Planet')) {
-      this.mesh.renderOrder = RENDER_ORDER.PLANET;
-    } else if (this.type.includes('Moon')) {
-      this.mesh.renderOrder = RENDER_ORDER.MOON;
+    this.material.side = THREE.DoubleSide;
+    this.mesh = new THREE.Mesh(geometry, this.material);
+    if (this.castShadow === undefined) {
+      this.castShadow = false;
     }
+    this.mesh.castShadow = this.castShadow;
+    if (this.receiveShadow === undefined) {
+      this.receiveShadow = false;
+    }
+    this.mesh.receiveShadow = this.receiveShadow;
 
     const startX = Math.cos(this.startAngle) * this.orbitRadius;
     const startY = Math.sin(this.startAngle) * this.orbitRadius;
 
-    // Set initial position to Z = 0
-    this.position.set(startX, startY, 0);
+    this.position.x = startX;
+    this.position.y = startY;
+    // z position set in child classes
+
     if (this.parentObject) {
       this.position.x += this.parentObject.position.x;
       this.position.y += this.parentObject.position.y;

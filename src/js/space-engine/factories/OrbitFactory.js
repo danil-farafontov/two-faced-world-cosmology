@@ -17,11 +17,15 @@ class OrbitFactory {
 
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const opacity = 0.5;
+    const material = new THREE.LineBasicMaterial({
+      color,
+      opacity,
+      transparent: true
 
-    const material = new THREE.LineBasicMaterial({ color });
+    });
 
     const mesh = new THREE.LineLoop(geometry, material);
-    mesh.renderOrder = RENDER_ORDER.ORBIT;
 
     return mesh;
   }

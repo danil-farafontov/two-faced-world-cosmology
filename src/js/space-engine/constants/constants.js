@@ -30,3 +30,12 @@ export const RENDER_ORDER = {
   STAR: 3,
   MOON: 4,
 };
+
+// Z coordinates
+export const Z_POSITIONING = {
+  STAR_FIELD: -250,
+  ORBIT: -222,
+  PLANET: -100,
+  STAR: -100,
+  MOON: -95,
+}
