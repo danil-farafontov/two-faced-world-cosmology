@@ -249,7 +249,7 @@ two-faced-world-cosmology/
 ### Stage 8: Features
 - [ ] Textures
 - [x] Rotation of Space Objects
-- [ ] Light
+- [x] Light
 - [ ] Improve camera.focuseOn - allow to zoom when focusOn animation finished.
 
 ### Stage 9: Timeline
