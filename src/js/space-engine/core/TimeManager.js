@@ -1,7 +1,7 @@
 export class TimeManager {
   constructor(config = {}) {
     this.simTime = 0;              // Current simulation time in HOURS (float number)
-    this._isPlaying = false;        // private field for pause
+    this._isPlaying = config.startAutoplay ?? false;        // private field for pause
     this.speedMultiplier = 1;      // How many simulation HOURS pass per 1 real SECOND
     this.lastFrameTime = performance.now();
 

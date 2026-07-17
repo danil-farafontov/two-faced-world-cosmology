@@ -5,6 +5,7 @@ import TimeControls from './components/TimeControls.vue';
 import Loader from './components/Loader.vue';
 import SpaceSimulation from './space-engine/core/SpaceSimulation.js';
 import { LocalSpaceObjectsRepository } from './space-engine/repositories/LocalSpaceObjectsRepository.js';
+import { SIMULATION_CONFIG } from './config/simulation.config.js';
 
 const spaceSimulation = shallowRef(null);
 provide('spaceSimulation', spaceSimulation);
@@ -40,7 +41,7 @@ onMounted(async () => {
     const spaceObjectsData = await repository.value.getSpaceObjects();
 
     const container = document.getElementById('canvas-container');
-    spaceSimulation.value = new SpaceSimulation(container, spaceObjectsData);
+    spaceSimulation.value = new SpaceSimulation(container, spaceObjectsData, SIMULATION_CONFIG);
     spaceSimulation.value.start();
   } finally {
     isLoading.value = false;

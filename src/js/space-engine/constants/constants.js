@@ -23,14 +23,6 @@ export const CONTROLS_CONFIG = {
   maxZoom: 10,
 };
 
-// Render order
-export const RENDER_ORDER = {
-  ORBIT: 1,
-  PLANET: 2,
-  STAR: 3,
-  MOON: 4,
-};
-
 // Z coordinates
 export const Z_POSITIONING = {
   STAR_FIELD: -250,

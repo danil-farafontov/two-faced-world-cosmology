@@ -1,13 +1,11 @@
 <script setup>
   import { inject, ref, computed } from 'vue';
   import { declension } from '../utils/declension';
+  import { SIMULATION_CONFIG } from '../config/simulation.config.js';
   const spaceSimulation = inject('spaceSimulation');
-  const isPlalying = ref(false);
+  const isPlalying = ref(SIMULATION_CONFIG.startAutoplay ?? false);
   const showOrbits = ref(true);
   const speedMultiplier = ref(1);
-  const hoursWord = computed(() => {
-    return declension(speedMultiplier.value, ['ЧАС', 'ЧАСА', 'ЧАСОВ']);
-  });
   const playBtnClicked = () => {
     isPlalying.value = !isPlalying.value;
     spaceSimulation.value?.toggleSimulationIsPlaying();

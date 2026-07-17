@@ -11,7 +11,7 @@ import CameraManager from './CameraManager';
 import { Z_POSITIONING } from '../constants/constants.js';
 
 class SpaceSimulation {
-  constructor(container, spaceObjectsData) {
+  constructor(container, spaceObjectsData, config) {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(COLORS.background);
 
@@ -21,7 +21,9 @@ class SpaceSimulation {
     this.controls = this._createControls();
     this.cameraManager = new CameraManager(this.camera, this.controls);
 
-    this.timeManager = new TimeManager();
+    this.timeManager = new TimeManager({
+      startAutoplay: config.startAutoplay
+    });
     this.starField = null;
     this.spaceObjects = [];
     this.showOrbits = true;
