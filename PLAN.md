@@ -254,10 +254,10 @@ two-faced-world-cosmology/
 
 ### Stage 9: Timeline
 - [ ] Decide on the calendar. Which calendar to use? What are the fantasy month names? What is the composition of the year and months?
-- [ ] Set default positions for all celestial objects and bind them to a specific date
+- [ ] Set default positions for all space objects and bind them to a specific date
 - [ ] Date selection (year, month, day) from fantasy calendar
 - [ ] Display current date (year, month, day, hour, minute, second) — dynamically change date while animation is running
-- [ ] Date selection → calculate positions of celestial objects at the selected time point
+- [ ] Date selection → calculate positions of space objects at the selected time point
 
 ### Stage 10: Interface (Fantasy Style)
 - [ ] Information panel (parchment style)
@@ -282,6 +282,8 @@ two-faced-world-cosmology/
 - [ ] Ellipsoid orbits
 - [ ] Fantasy "Flows" between moons when they are close to each other
 - [ ] FirmamentConePlacement - replace OS cursor with internal cursor. To hide that line is late to os cursor
+- [ ] GLSL shaders for Stars. Demonstration.
+- [ ] Add 10k asteroids. Confirm it is lagging. Try to optimize it with InstancedMesh.
 
 
 
